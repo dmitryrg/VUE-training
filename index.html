@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>VUE experiments</title>
+        <!-- версия для разработки, отображает полезные предупреждения в консоли -->
+        <style>
+            img {
+                width: 50px;
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <div id="app">
+            <div  v-show="isVisible">
+                <h4>
+                    Количество пользователей {{users.length}}
+                </h4>
+                <table>
+                    <tr v-for="user of users">
+                        <td v-for="(val,key) in user">
+                            <img v-if="key === 'avatar' && val " :src="val">
+                            <img v-else-if="key === 'avatar'" src="./avatars/default.png">
+                            <span v-else> {{val  | toUpperCase}}</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <button type="button" @click="triggerShowHide" v-tooltip="tooltip">change visible</button>
+            <!--:title="tooltip"-->
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="./users.js"></script>
+        <script src="https://unpkg.com/v-tooltip"></script>
+
+        <script>
+
+            const app = new Vue({
+                el: '#app',
+                data: function () {
+                    return {
+                        users,
+                        isVisible: true,
+                        tooltip: 'всплывающая подсказка'
+                    }
+                },
+                methods: {
+                    triggerShowHide () {
+                        this.isVisible = !this.isVisible
+                    }
+                },
+                filters: {
+                    toUpperCase: function (value) {
+                        if (!value) return '';
+                        value = value.toString();
+                        return value.toUpperCase();
+                    }
+                }
+            })
+        </script>
+
+
+    </body>
+</html>
