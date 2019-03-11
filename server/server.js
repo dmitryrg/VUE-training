@@ -1,16 +1,16 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+const http = require('http')
+const fs = require('fs')
+const path = require('path')
 
-const PART_DATABASE_JSON = '../db/users.json';
-const PREFIX_API_PATH = '/api';
-const PUBLIC_DIR = '../public';
+const PART_DATABASE_JSON = '../db/users.json'
+const PREFIX_API_PATH = '/api'
+const PUBLIC_DIR = '../public'
 
 const PORT = 3000;
 
 http.createServer(function (request, response) {
-    console.log('request url', request.url);
-    console.log('request method', request.method);
+    console.log('request url', request.url)
+    console.log('request method', request.method)
 
     if (request.url.substr(0, PREFIX_API_PATH.length) === PREFIX_API_PATH) { //  API-шная часть
         // по-любому должна быть база данных, хоть пустой массив, но он должен быть
@@ -18,35 +18,35 @@ http.createServer(function (request, response) {
             if (error) {
                 const errSend = error.code === 'ENOENT'
                     ? {code: 404, body: 'File with db users is not found'}
-                    : {code: 500, body: 'Server error'};
-                response.statusCode = errSend.code;
-                response.end(errSend.body);
+                    : {code: 500, body: 'Server error'}
+                response.statusCode = errSend.code
+                response.end(errSend.body)
                 return;
             }
             // надо убедиться, что в базе что-то есть
             if (!contentFile.toString()) {
-                response.statusCode = 404;
-                response.end('Users db is empty');
+                response.statusCode = 404
+                response.end('Users db is empty')
                 return;
             }
             
             let contentDb = null; // здесь будет находиться разобранная база данных
             try {
-                contentDb = JSON.parse(contentFile);
+                contentDb = JSON.parse(contentFile)
             } catch (err) {
-                contentDb = ''; // поймаем ошибку при проверке на массив
+                contentDb = ''// поймаем ошибку при проверке на массив
             };
 
             if (!Array.isArray(contentDb) ) {
-                response.statusCode = 400;
-                response.end('Users db has wrong format');
+                response.statusCode = 400
+                response.end('Users db has wrong format')
                 return;
             };
 
             // получаем запрос api и id-шник
-            const dividerPosition = request.url.indexOf('/', PREFIX_API_PATH.length + 1);
-            const pathApi = dividerPosition === -1 ? request.url.slice(PREFIX_API_PATH.length) : request.url.slice(PREFIX_API_PATH.length, dividerPosition);
-            const idApi = dividerPosition === -1 ? '' : request.url.slice(dividerPosition + 1);
+            const dividerPosition = request.url.indexOf('/', PREFIX_API_PATH.length + 1)
+            const pathApi = dividerPosition === -1 ? request.url.slice(PREFIX_API_PATH.length) : request.url.slice(PREFIX_API_PATH.length, dividerPosition)
+            const idApi = dividerPosition === -1 ? '' : request.url.slice(dividerPosition + 1)
 
 
             // если все нормально с данными
@@ -56,35 +56,35 @@ http.createServer(function (request, response) {
                     switch (pathApi) {
                         case '/users':
                             if (idApi !== '') { // проверка на корректность запроса
-                                response.statusCode = 400;
-                                response.end(`Param id ${idApi} does not use with "${pathApi}" API query "${request.method}"`);
-                                return;
+                                response.statusCode = 400
+                                response.end(`Param id ${idApi} does not use with "${pathApi}" API query "${request.method}"`)
+                                return
                             }
 
                             if (!contentDb.length) { // проверка на наличие данных
-                                response.statusCode = 404;
-                                response.end('Users db is empty');
-                                return;
+                                response.statusCode = 404
+                                response.end('Users db is empty')
+                                return
                             }
 
-                            console.log('contentDb[indexRecord] ->', contentDb[indexRecord]); // debug
+                            console.log('content ->', contentFile.toString()) // debug
 
-                            response.writeHead(200, {'Content-Type': 'application/json'});
-                            response.end(contentFile, 'utf-8');
+                            response.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'})
+                            response.end(contentFile, 'utf-8')
 
-                            break;
+                            break
                         case '/user':
                             if (idApi === '') {// проверка на корректность запроса
-                                response.statusCode = 400;
-                                response.end(`Necessary parameter "id" is absent in "${pathApi}" API query "${request.method}"`);
-                                return;
+                                response.statusCode = 400
+                                response.end(`Necessary parameter "id" is absent in "${pathApi}" API query "${request.method}"`)
+                                return
                             }
                             // находим позицию в массиве базы данных, предварительно создав массив из ID-шников
-                            const indexRecord = createIndexDb(contentDb).indexOf(Number(idApi));
+                            const indexRecord = createIndexDb(contentDb).indexOf(Number(idApi))
 
                             if ( indexRecord === -1) { // проверка на отсутствие такой записи
-                                response.statusCode = 404;
-                                response.end(`User with id ${idApi} does not present in db`);
+                                response.statusCode = 404
+                                response.end(`User with id ${idApi} does not present in db`)
                                 return;
                             };
 
