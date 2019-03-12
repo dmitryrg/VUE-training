@@ -57,7 +57,7 @@
         },
         computed: {
             isCardReady2 () {
-                return this.user2.firstName ? true : false
+                return !!this.user2.firstName
             }
         }
     };
@@ -75,7 +75,7 @@
         },
         computed: {
             isCardReady1 () {
-                return this.user1.firstName ? true : false
+                return !!this.user1.firstName
             }
         },
 

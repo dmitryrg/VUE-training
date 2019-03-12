@@ -5,9 +5,10 @@
       Количество пользователей {{ amountUsersComputed }}
     </h4>
     <tag-users-1 :users2="users1"> </tag-users-1>
-  </div>
 
-  <!--<button type="button" @click="triggerShowHide" v-tooltip.right="tooltip">change visible</button>-->
+    <button type="button" @click="triggerShowHide" >change visible</button>
+
+  </div>
 </template>
 
 <script>

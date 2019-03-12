@@ -58,7 +58,7 @@
                 },
                 computed: {
                     isListReady () {
-                        return this.users2.length ? true : false
+                        return !!this.users2.length
                     }
                 },
                 filters: {
