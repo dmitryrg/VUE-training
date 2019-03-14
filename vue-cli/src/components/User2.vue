@@ -1,20 +1,27 @@
 <template>
-  <table v-show="isCardReady2" class="table table-hover">
-    <tbody>
-      <tr v-for="(val, key) in user2" :key="key">
-        <td>
-          {{ key }}
-        </td>
-        <td>
-          <!--<span> {{ val }}</span>-->
-          <img v-if="key === 'avatar'" :src="fillVal(val)" />
-          <span v-else-if="key === 'id'"> {{ val }}</span>
-          <input v-else type="text" :value="val" @input="val = $event.target.value" />
-          <!--<input v-else v-model="val" type="text" />-->
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div v-show="isCardReady2">
+    <div class="form-group">
+      <label>Имя</label>
+      <input
+        :value="localUser2.firstName"
+        type="text"
+        class="form-control"
+        @input="localUser2.firstName = $event.target.value"
+      />
+    </div>
+    <div class="form-group">
+      <label>Фамилия</label>
+      <input v-model="localUser2.lastName" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Отчество</label>
+      <input v-model="localUser2.patronymic" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Аватар</label>
+      <img :src="fillVal(localUser2.avatar)" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -27,10 +34,16 @@ export default {
       required: true
     }
   },
+  data: () => ({
+    localUser2: {}
+  }),
   computed: {
     isCardReady2() {
       return !!this.user2.firstName
     }
+  },
+  mounted() {
+    this.localUser2 = Object.assign({}, this.user2)
   },
   methods: {
     fillVal(val) {
