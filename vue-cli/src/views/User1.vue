@@ -1,7 +1,7 @@
 <template>
   <div>
-    <tag-user-1 :user2="user1"></tag-user-1>
-    <button type="button" @click="goBack">Back</button>
+    <tag-user-1 :user2="user1" @update-user="updateUser1"></tag-user-1>
+    <button type="button" @click="changeUser">Back</button>
     <pre>
       {{ user1 }}
     </pre>
@@ -22,7 +22,6 @@ export default {
       user1: {}
     }
   },
-
   computed: {
     idUser() {
       return this.$route.params.idPath
@@ -37,6 +36,12 @@ export default {
   methods: {
     goBack() {
       this.$router.push({ path: '/users' })
+    },
+    changeUser() {
+      this.user1 = { firstName: 'Inan' }
+    },
+    updateUser1(localUser2) {
+      this.user1 = localUser2
     }
   }
 }

@@ -25,7 +25,12 @@
 </template>
 
 <script>
+// import equalObj from '@/functions/deep.js'
+
+import { copyObj, equalObj } from '@/functions/deep.js'
+
 const DEFAULT_IMAGE = './avatars/default.png'
+
 export default {
   name: 'User2',
   props: {
@@ -42,12 +47,25 @@ export default {
       return !!this.user2.firstName
     }
   },
-  mounted() {
-    this.localUser2 = Object.assign({}, this.user2)
+  watch: {
+    user2: {
+      deep: true,
+      handler: 'updateUser2Down'
+    },
+    localUser2: {
+      deep: true,
+      handler: 'updateUser2Up'
+    }
   },
   methods: {
     fillVal(val) {
       return val ? val : DEFAULT_IMAGE
+    },
+    updateUser2Up() {
+      this.$emit('update-user', copyObj(this.localUser2)) // генерим свое событие update-user и закидываем туда  localUser2
+    },
+    updateUser2Down() {
+      if (!equalObj(this.user2, this.localUser2)) this.localUser2 = copyObj(this.user2)
     }
   }
 }
