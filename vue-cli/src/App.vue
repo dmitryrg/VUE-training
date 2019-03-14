@@ -15,15 +15,16 @@
       </button>
       <div id="navbarCollapse" class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <router-link to="/">Home</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/about">About</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/users1">Users1</router-link>
-          </li>
+          <!--<router-link to="/" tag="li" class="nav-item" exact active-class="active">-->
+          <router-link to="/" tag="li" class="nav-item" exact>
+            <a class="nav-link">Home</a>
+          </router-link>
+          <router-link to="/about" tag="li" class="nav-item">
+            <a class="nav-link">About</a>
+          </router-link>
+          <router-link to="/users" tag="li" class="nav-item">
+            <a class="nav-link">Users</a>
+          </router-link>
         </ul>
       </div>
     </nav>

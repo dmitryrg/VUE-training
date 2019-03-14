@@ -1,16 +1,26 @@
 <template>
-  <table v-show="isListReady">
-    <tr v-for="user of users2" :key="user.id">
-      <td v-for="(val, key) in user" :key="key">
-        <img v-if="key === 'avatar' && val" :src="val" />
-        <img v-else-if="key === 'avatar'" src="./avatars/default.png" />
-        <span v-else> {{ val | toUpperCase }}</span>
-      </td>
-    </tr>
+  <table v-show="isListReady" class="table table-hover">
+    <thead>
+      <tr>
+        <th v-for="(val, key) in users2[0]" :key="key">
+          <span> {{ key }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <router-link v-for="user of users2" :key="user.id" :to="makePathUser(user)" tag="tr">
+        <td v-for="(val, key) in user" :key="key">
+          <img v-if="key === 'avatar'" :src="fillVal(val)" />
+          <span v-else> {{ val | toUpperCase }}</span>
+          <!--<span> {{ val }}</span>-->
+        </td>
+      </router-link>
+    </tbody>
   </table>
 </template>
 
 <script>
+const DEFAULT_IMAGE = './avatars/default.png'
 export default {
   name: 'Users2',
   filters: {
@@ -30,8 +40,20 @@ export default {
     isListReady() {
       return !!this.users2.length
     }
+  },
+  methods: {
+    fillVal(val) {
+      return val ? val : DEFAULT_IMAGE
+    },
+    makePathUser(user) {
+      return '/user/' + user.id
+    }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+img {
+  width: 50px;
+}
+</style>

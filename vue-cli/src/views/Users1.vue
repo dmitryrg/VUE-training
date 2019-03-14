@@ -1,13 +1,13 @@
 <template>
-  <div v-show="isVisible">
-    <h4>
-      <!--Количество пользователей {{amountUsersMethods()}}-->
-      Количество пользователей {{ amountUsersComputed }}
-    </h4>
-    <tag-users-1 :users2="users1"> </tag-users-1>
-
-    <button type="button" @click="triggerShowHide" >change visible</button>
-
+  <div>
+    <div v-show="isVisible">
+      <h4>
+        <!--Количество пользователей {{amountUsersMethods()}}-->
+        Количество пользователей {{ amountUsersComputed }}
+      </h4>
+      <tag-users-1 :users2="users1"></tag-users-1>
+    </div>
+    <button type="button" @click="triggerShowHide">change visible</button>
   </div>
 </template>
 
@@ -38,9 +38,7 @@ export default {
     axios
       .get('http://127.0.0.1:3000/api/users')
       .then(response => response.data)
-      .then(users => this.users1 = users);
-
-    console.log('load users ->', this.users1) // debug
+      .then(users => (this.users1 = users))
   },
   methods: {
     triggerShowHide() {

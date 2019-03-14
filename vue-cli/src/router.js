@@ -4,10 +4,13 @@ import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import About from '@/views/About.vue'
 import Users1 from '@/views/Users1.vue'
+import User1 from '@/views/User1.vue'
 
 Vue.use(Router)
 
 export default new Router({
+  linkActiveClass: 'active',
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -20,9 +23,14 @@ export default new Router({
       component: About
     },
     {
-      path: '/users1',
-      name: 'users1',
+      path: '/users',
+      name: 'users', // зачем нужен параметр Name если к тэгу м
       component: Users1
+    },
+    {
+      path: '/user/:idPath',
+      name: 'user',
+      component: User1
     }
   ]
 })
