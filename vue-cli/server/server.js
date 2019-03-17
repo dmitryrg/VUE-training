@@ -132,6 +132,7 @@ http
             }
             break
           case 'POST':
+          case 'OPTIONS':
             // выбираем действие в зависимости от АПИ запроса
             switch (pathApi) {
               case '/user':
@@ -179,7 +180,12 @@ http
                         response.end('File with db users can not be writed')
                         return
                       }
-                      response.writeHead(200, { 'Access-Control-Allow-Origin': '*' })
+                      console.log('writeHead suscess post->'); // debug
+
+                      response.writeHead(200, {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                      })
                       // response.statusCode = 200
                       response.end(`User with "id" "${idApi}" has been added to db`)
                     })
