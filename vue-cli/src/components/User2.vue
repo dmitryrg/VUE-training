@@ -3,9 +3,9 @@
     <div class="form-group">
       <label>Имя</label>
       <input
-        :value="localUser2.firstName"
         type="text"
         class="form-control"
+        :value="localUser2.firstName"
         @input="localUser2.firstName = $event.target.value"
       />
     </div>
@@ -37,16 +37,15 @@ export default {
     user2: {
       type: Object,
       required: true
+    },
+    isCardReady2: {
+      type: Boolean,
+      required: true
     }
   },
   data: () => ({
     localUser2: {}
   }),
-  computed: {
-    isCardReady2() {
-      return !!this.user2.firstName
-    }
-  },
   watch: {
     user2: {
       deep: true,
@@ -63,9 +62,11 @@ export default {
     },
     updateUser2Up() {
       this.$emit('update-user', copyObj(this.localUser2)) // генерим свое событие update-user и закидываем туда  localUser2
+      console.log('this.localUser2 Up ->', this.localUser2) // debug
     },
     updateUser2Down() {
       if (!equalObj(this.user2, this.localUser2)) this.localUser2 = copyObj(this.user2)
+      console.log('this.localUser2 Down ->', this.localUser2) // debug
     }
   }
 }

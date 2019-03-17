@@ -7,7 +7,8 @@
       </h4>
       <tag-users-1 :users2="users1"></tag-users-1>
     </div>
-    <button type="button" @click="triggerShowHide">change visible</button>
+    <button type="button" class="btn btn-primary" @click="triggerShowHide">change visible</button>
+    <button type="button" class="btn btn-success" @click="addUser">Add</button>
   </div>
 </template>
 
@@ -43,6 +44,9 @@ export default {
   methods: {
     triggerShowHide() {
       this.isVisible = !this.isVisible
+    },
+    addUser() {
+      this.$router.push({ path: '/user' })
     }
     /*                    amountUsersMethods () {
                                 return this.users ? this.users.length : 0
@@ -51,4 +55,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+button {
+  margin: 5px;
+}
+</style>
