@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        const xhr = new XMLHttpRequest()
+        function doPost () {
+            xhr.open('POST', 'http://localhost:3000/user')
+            // xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.send(JSON.stringify({fn:'aaa', ln:'bbb'}))
+            xhr.onload = () => {
+                console.log(' post xhr.responseText ->', xhr.responseText); // debug
+            }
+        }
+
+    </script>
+</head>
+<body>
+<input type="button" onclick="doPost ()" value="Старт"/>
+</body>
+
+</html>

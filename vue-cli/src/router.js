@@ -28,12 +28,12 @@ export default new Router({
       component: Users1
     },
     {
-      path: '/user/:idPath',
+      path: '/users/:idPath',
       name: 'userPut',
       component: User1
     },
     {
-      path: '/user',
+      path: '/users/new',
       name: 'userAdd',
       component: User1
     }

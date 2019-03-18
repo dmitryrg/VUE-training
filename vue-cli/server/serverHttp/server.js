@@ -2,16 +2,19 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 
-const PART_DATABASE_JSON = '../db/users.json'
-const PREFIX_API_PATH = '/api'
-const PUBLIC_DIR = '../public'
+const PART_DATABASE_JSON = '../../db/users.json'
+const PREFIX_API_PATH = ''
+const PUBLIC_DIR = '../../public'
 
-const PORT = 3000
+const PORT = 3001
 
 http
   .createServer(function(request, response) {
     console.log('request url', request.url)
+
     console.log('request method', request.method)
+
+    console.log('request.headers ->', request.headers) // debug
 
     if (request.url.substr(0, PREFIX_API_PATH.length) === PREFIX_API_PATH) {
       //  API-шная часть
@@ -22,30 +25,24 @@ http
             error.code === 'ENOENT'
               ? { code: 404, body: 'File with db users is not found' }
               : { code: 500, body: 'Server error' }
-          response.writeHead(errSend.code, { 'Access-Control-Allow-Origin': '*' })
-          // response.statusCode = errSend.code
-          response.end(errSend.body)
+          errorEnd(errSend.code, errSend.body, response)
           return
         }
         // надо убедиться, что в базе что-то есть
         if (!contentFile.toString()) {
-          response.writeHead(404, { 'Access-Control-Allow-Origin': '*' })
-          // response.statusCode = 404
-          response.end('Users db is empty')
+          errorEnd(404, 'Users db is empty', response)
           return
         }
 
         let contentDb = null // здесь будет находиться разобранная база данных
         try {
-          contentDb = JSON.parse(contentFile.toString())
+          contentDb = JSON.parse(contentFile.toString())['users']
         } catch (err) {
           contentDb = '' // поймаем ошибку при проверке на массив
         }
 
         if (!Array.isArray(contentDb)) {
-          response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-          // response.statusCode = 400
-          response.end('Users db has wrong format')
+          errorEnd(400, 'Users db has wrong format', response)
           return
         }
 
@@ -62,86 +59,61 @@ http
 
         // если все нормально с данными
         switch (request.method) {
+          // для POST, PUT, DELETE иногда бывают двойные запросы
+          case 'OPTIONS':
+            response.writeHead(200, {
+              // 'Access-Control-Allow-Credentials': true,
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+              'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE'
+            })
+            response.end()
+            break
+
           case 'GET':
+            console.log('idApi ->', idApi) // debug
+            // выбираем действие в зависимости от АПИ запроса
+            switch (pathApi) {
+              case '/users':
+                if (idApi === '') {
+                  // запрос на всех юзеров
+                  if (!contentDb.length) {
+                    // проверка на наличие данных
+                    errorEnd(404, 'Users db is empty', response)
+                    return
+                  }
+                  console.log('content ->', contentDb) // debug
+                  successEnd(200, JSON.stringify(contentDb), response)
+                } else {
+                  // запрос на определенного юзверя
+                  // находим позицию в массиве базы данных, предварительно создав массив из ID-шников
+                  indexRecord = createIndexDb(contentDb).indexOf(Number(idApi))
+                  if (indexRecord === -1) {
+                    // проверка на отсутствие такой записи
+                    errorEnd(404, `User with id ${idApi} does not present in db`, response)
+                    return
+                  }
+                  console.log('contentDb[indexRecord] ->', contentDb[indexRecord]) // debug
+                  successEnd(200, JSON.stringify(contentDb[indexRecord]), response)
+                }
+                break
+              default:
+                errorEnd(500, `Path ${pathApi} not service by api server`, response)
+                return
+            }
+            break
+          case 'POST':
             // выбираем действие в зависимости от АПИ запроса
             switch (pathApi) {
               case '/users':
                 if (idApi !== '') {
                   // проверка на корректность запроса
-                  response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 400
-                  response.end(
-                    `Param id ${idApi} does not use with "${pathApi}" API query "${request.method}"`
-                  )
-                  return
-                }
-
-                if (!contentDb.length) {
-                  // проверка на наличие данных
-                  response.writeHead(404, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 404
-                  response.end('Users db is empty')
-                  return
-                }
-
-                console.log('content ->', contentFile.toString()) // debug
-
-                response.writeHead(200, {
-                  'Content-Type': 'application/json',
-                  'Access-Control-Allow-Origin': '*'
-                })
-                response.end(contentFile, 'utf-8')
-
-                break
-              case '/user':
-                if (idApi === '') {
-                  // проверка на корректность запроса
-                  response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 400
-                  response.end(
-                    `Necessary parameter "id" is absent in "${pathApi}" API query "${
+                  errorEnd(
+                    400,
+                    `Param id ${idApi} does not use with "${pathApi}" API query "${
                       request.method
-                    }"`
-                  )
-                  return
-                }
-                // находим позицию в массиве базы данных, предварительно создав массив из ID-шников
-                indexRecord = createIndexDb(contentDb).indexOf(Number(idApi))
-
-                if (indexRecord === -1) {
-                  // проверка на отсутствие такой записи
-                  response.writeHead(404, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 404
-                  response.end(`User with id ${idApi} does not present in db`)
-                  return
-                }
-
-                console.log('contentDb[indexRecord] ->', contentDb[indexRecord]) // debug
-
-                response.writeHead(200, {
-                  'Content-Type': 'application/json',
-                  'Access-Control-Allow-Origin': '*'
-                })
-                response.end(JSON.stringify(contentDb[indexRecord]), 'utf-8')
-                break
-              default:
-                response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                // response.statusCode = 500
-                response.end(`Path ${pathApi} not service by api server`)
-                return
-            }
-            break
-          case 'POST':
-          case 'OPTIONS':
-            // выбираем действие в зависимости от АПИ запроса
-            switch (pathApi) {
-              case '/user':
-                if (idApi !== '') {
-                  // проверка на корректность запроса
-                  response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 400
-                  response.end(
-                    `Param id ${idApi} does not use with "${pathApi}" API query "${request.method}"`
+                    }"`,
+                    response
                   )
                   return
                 }
@@ -160,56 +132,49 @@ http
                     } catch (err) {
                       requestBodyObj = ''
                     }
-                    if (requestBodyObj !== null && typeof requestBodyObj === 'object') {
-                      response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                      // response.statusCode = 400
-                      response.end('Request body has wrong format')
+                    console.log('requestBodyStr ->', requestBodyStr) // debug
+                    console.log('typeof requestBodyObj ->', typeof requestBodyObj) // debug
+
+                    if (requestBodyObj === null || typeof requestBodyObj !== 'object') {
+                      errorEnd(400, 'Request body has wrong format', response)
                       return
                     }
 
                     requestBodyObj['id'] = findMaxId(contentDb) + 1
+                    console.log('requestBodyObj ->', requestBodyObj) // debug
 
                     contentDb.push(requestBodyObj)
 
-                    console.log('contentDb ->', contentDb) // debug
-
-                    fs.writeFile(PART_DATABASE_JSON, JSON.stringify(contentDb), error => {
-                      if (error) {
-                        response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                        // response.statusCode = 500
-                        response.end('File with db users can not be writed')
-                        return
+                    fs.writeFile(
+                      PART_DATABASE_JSON,
+                      JSON.stringify({ users: contentDb }),
+                      error => {
+                        if (error) {
+                          errorEnd(500, 'File with db users can not be writed', response)
+                          return
+                        }
+                        successEnd(200, JSON.stringify(requestBodyObj), response)
                       }
-                      console.log('writeHead suscess post->'); // debug
-
-                      response.writeHead(200, {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                      })
-                      // response.statusCode = 200
-                      response.end(`User with "id" "${idApi}" has been added to db`)
-                    })
+                    )
                   })
                 break
               default:
-                response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                // response.statusCode = 500
-                response.end(`Path ${pathApi} not service by api server`)
+                errorEnd(500, `Path ${pathApi} not service by api server`, response)
                 return
             }
             break
           case 'PUT':
             // выбираем действие в зависимости от АПИ запроса
             switch (pathApi) {
-              case '/user':
+              case '/users':
                 if (idApi === '') {
                   // проверка на корректность запроса
-                  response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 400
-                  response.end(
+                  errorEnd(
+                    400,
                     `Necessary parameter "id" is absent in "${pathApi}" API query "${
                       request.method
-                    }"`
+                    }"`,
+                    response
                   )
                   return
                 }
@@ -226,10 +191,9 @@ http
                       requestBodyObj = ''
                     }
                     console.log('typeof requestBodyObj ->', typeof requestBodyObj) // debug
+                    console.log('requestBodyStr ->', requestBodyStr) // debug
                     if (requestBodyObj !== null && typeof requestBodyObj !== 'object') {
-                      response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                      // response.statusCode = 400
-                      response.end('Request body has wrong format')
+                      errorEnd(400, 'Request body has wrong format', response)
                       return
                     }
 
@@ -241,10 +205,10 @@ http
                     // проходим по всем ключам прилетевшего объекта и меняем их в объекте базы данных
                     for (let key in requestBodyObj) {
                       if (!proccessedRecord.hasOwnProperty(key)) {
-                        response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                        // response.statusCode = 400
-                        response.end(
-                          `Record in db have not field "${key}", API query "${request.method}"`
+                        errorEnd(
+                          400,
+                          `Record in db have not field "${key}", API query "${request.method}"`,
+                          response
                         )
                         return
                       }
@@ -253,23 +217,21 @@ http
 
                     console.log('contentDb ->', contentDb) // debug
 
-                    fs.writeFile(PART_DATABASE_JSON, JSON.stringify(contentDb), error => {
-                      if (error) {
-                        response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                        // response.statusCode = 500
-                        response.end('File with db users can not be writed')
-                        return
+                    fs.writeFile(
+                      PART_DATABASE_JSON,
+                      JSON.stringify({ users: contentDb }),
+                      error => {
+                        if (error) {
+                          errorEnd(500, 'File with db users can not be writed', response)
+                          return
+                        }
+                        successEnd(200, proccessedRecord, response)
                       }
-                      response.writeHead(200, { 'Access-Control-Allow-Origin': '*' })
-                      // response.statusCode = 200
-                      response.end(`User with "id" "${idApi}" has been updated`)
-                    })
+                    )
                   })
                 break
               default:
-                response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                // response.statusCode = 500
-                response.end(`Path ${pathApi} not service by api server`)
+                errorEnd(500, `Path ${pathApi} not service by api server`, response)
                 return
             }
 
@@ -277,15 +239,15 @@ http
           case 'DELETE':
             // выбираем действие в зависимости от АПИ запроса
             switch (pathApi) {
-              case '/user':
+              case '/users':
                 if (idApi === '') {
                   // проверка на корректность запроса
-                  response.writeHead(400, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 400
-                  response.end(
+                  errorEnd(
+                    400,
                     `Necessary parameter "id" is absent in "${pathApi}" API query "${
                       request.method
-                    }"`
+                    }"`,
+                    response
                   )
                   return
                 }
@@ -294,40 +256,30 @@ http
 
                 if (indexRecord === -1) {
                   // проверка на отсутствие такой записи
-                  response.writeHead(404, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 404
-                  response.end(`User with id ${idApi} does not present in db`)
+                  errorEnd(404, `User with id ${idApi} does not present in db`, response)
                   return
                 }
                 // удаляем соответствующую запись из базы данных
-                contentDb.splice(indexRecord)
+                contentDb.splice(indexRecord, 1)
 
                 console.log('contentDb ->', contentDb) // debug
 
-                fs.writeFile(PART_DATABASE_JSON, JSON.stringify(contentDb), error => {
+                fs.writeFile(PART_DATABASE_JSON, JSON.stringify({ users: contentDb }), error => {
                   if (error) {
-                    response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                    // response.statusCode = 500
-                    response.end('File with db users can not be writed')
+                    errorEnd(500, 'File with db users can not be writed', response)
                     return
                   }
-                  response.writeHead(200, { 'Access-Control-Allow-Origin': '*' })
-                  // response.statusCode = 200
-                  response.end(`User with "id" "${idApi}" has been deleted`)
+                  successEnd(200, `User with "id" "${idApi}" has been deleted`, response)
                 })
 
                 break
               default:
-                response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-                // response.statusCode = 500
-                response.end(`Path ${pathApi} not service by api server`)
+                errorEnd(500, `Path ${pathApi} not service by api server`, response)
                 return
             }
             break
           default:
-            response.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
-            // response.statusCode = 500
-            response.end(`Method ${request.method} not service by api server`)
+            errorEnd(500, `Method ${request.method} not service by api server`, response)
             return
         }
       })
@@ -362,15 +314,9 @@ http
             error.code === 'ENOENT'
               ? { code: 404, body: 'File is not found' }
               : { code: 500, body: 'Server error' }
-          response.writeHead(errSend.code, { 'Access-Control-Allow-Origin': '*' })
-          // response.statusCode = errSend.code
-          response.end(errSend.body)
+          errorEnd(errSend.code, errSend.body, response)
         } else {
-          response.writeHead(200, {
-            'Content-Type': contentFileType,
-            'Access-Control-Allow-Origin': '*'
-          })
-          response.end(contentFile, 'utf-8')
+          successEnd(200, contentFile, response, contentFileType)
         }
       })
     }
@@ -397,4 +343,28 @@ function findMaxId(contentDb) {
   })
 
   return maxId
+}
+
+function successEnd(code, body, response, type) {
+  console.log('successEnd ->', code) // debug
+  response.writeHead(code, {
+    'Content-Type': type || 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+  })
+
+  /*  response.writeHead(200, {
+    'Content-Type': type || 'application/json'
+  })*/
+  response.end(body, 'utf-8')
+}
+
+function errorEnd(code, message, response) {
+  console.log('errorEnd ->', code) // debug
+  response.writeHead(code, {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+  })
+  // response.statusCode = errSend.code
+  response.end(message)
 }

@@ -2,18 +2,25 @@
   <table v-show="isListReady" class="table table-hover">
     <thead>
       <tr>
-        <th v-for="(val, key) in users2[0]" :key="key">
-          <span> {{ key }}</span>
-        </th>
+        <th><span> #</span></th>
+        <th><span>Имя</span></th>
+        <th><span>Фамилия</span></th>
+        <th><span>Отчество</span></th>
+        <th><span>Аватар</span></th>
       </tr>
     </thead>
     <tbody>
       <router-link v-for="user of users2" :key="user.id" :to="makePathUser(user)" tag="tr">
-        <td v-for="(val, key) in user" :key="key">
-          <img v-if="key === 'avatar'" :src="fillVal(val)" />
-          <span v-else> {{ val | toUpperCase }}</span>
-          <!--<span> {{ val }}</span>-->
+        <td>
+          <span> {{ user.firstName }}</span>
         </td>
+        <td>
+          <span> {{ user.lastName }}</span>
+        </td>
+        <td>
+          <span> {{ user.patronymic }}</span>
+        </td>
+        <td><img :src="fillVal(user.avatar)" /></td>
       </router-link>
     </tbody>
   </table>
@@ -46,7 +53,7 @@ export default {
       return val ? val : DEFAULT_IMAGE
     },
     makePathUser(user) {
-      return '/user/' + user.id
+      return '/users/' + user.id
     }
   }
 }

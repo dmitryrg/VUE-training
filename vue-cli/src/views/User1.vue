@@ -7,7 +7,7 @@
     ></tag-user-1>
     <button type="button" class="btn btn-primary" @click="goBack">Back</button>
     <button type="button" class="btn btn-success" @click="save">Save</button>
-    <button type="button" class="btn btn-danger" @click="del">Del</button>
+    <button v-show="!isNew" type="button" class="btn btn-danger" @click="del">Del</button>
     <pre>
       {{ user1 }}
     </pre>
@@ -17,6 +17,11 @@
 <script>
 import axios from 'axios'
 import User2 from '@/components/User2.vue'
+
+// const xhr = new XMLHttpRequest()
+
+const API_SERVER = 'http://localhost:3001'
+// const API_SERVER = 'https://api.limestudio.ru/apiservervue'
 
 export default {
   name: 'User1',
@@ -32,13 +37,16 @@ export default {
     idUser() {
       return this.$route.params.idPath
     },
+    isNew() {
+      return this.idUser === 'new'
+    },
     isCardReady1() {
       return !!Object.keys(this.user1).length
     }
   },
   mounted() {
-    // для случая когда нет id-шника нет надобности получать данные, но надо установить формат объекта
-    if (!this.idUser && this.idUser !== 0) {
+    // для случая когда новый пользователь
+    if (this.isNew) {
       this.user1 = {
         firstName: '',
         lastName: '',
@@ -48,52 +56,56 @@ export default {
       return
     }
 
-    axios
-      .get('http://127.0.0.1:3000/api/user/' + this.idUser)
-      .then(response => response.data)
-      .then(user => (this.user1 = user))
-      .catch(err => alert(err.message))
+    this.load()
   },
   methods: {
     goBack() {
       this.$router.push({ path: '/users' })
     },
-    /*    changeUser() {
-      this.user1 = { firstName: 'Inan' }
-    },*/
     updateUser1(localUser2) {
+      // с нижнего уровня вылетел юзер 2 и мы его загоняем в юзер 1
       this.user1 = localUser2
     },
+    load() {
+      /*      xhr.open('GET', API_SERVER + '/users/' + this.idUser)
+      xhr.send()
+      xhr.onload = () => {
+        this.user1 = JSON.parse(xhr.responseText)
+      }*/
+      axios
+        .get(API_SERVER + '/users/' + this.idUser)
+        .then(response => response.data)
+        .then(user => (this.user1 = user))
+        .catch(err => alert(err.message))
+    },
     save() {
-      if (!this.idUser && this.idUser !== 0) {
+      if (this.isNew) {
         // добавление нового пользователя
-        console.log('this.user1 ->', this.user1) // debug
-        axios({
-          method: 'post',
-          url: 'http://127.0.0.1:3000/api/user/',
-          data: this.user1
-        })
-          .then(response => console.log(response.data))
-          .catch(err => alert(err.message))
-        // this.$router.push({ path: '/users' })
 
-        /*
+        /*        xhr.open('POST', API_SERVER + '/users')
+        xhr.setRequestHeader('Content-type', 'application/json')
+        xhr.send(JSON.stringify(this.user1))
+        xhr.onload = () => {
+          console.log(' post xhr.responseText ->', xhr.responseText) // debug
+        }*/
+
         axios
-          .post('http://127.0.0.1:3000/api/user/', this.user1)*/
+          .post(API_SERVER + '/users', this.user1)
+          .then(() => this.$router.push({ path: '/users' }))
+          .catch(err => alert(err.message))
       } else {
         // редактирование существующего пользователя
         axios
-          .put('http://127.0.0.1:3000/api/user/' + this.idUser, this.user1)
-          .then(response => console.log(response.data))
+          .put(API_SERVER + '/users/' + this.idUser, this.user1)
+          .then(() => this.$router.push({ path: '/users' }))
           .catch(err => alert(err.message))
       }
     },
     del() {
       axios
-        .delete('http://127.0.0.1:3000/api/user/' + this.idUser)
-        .then(response => console.log(response.data))
+        .delete(API_SERVER + '/users/' + this.idUser)
+        .then(() => this.$router.push({ path: '/users' }))
         .catch(err => alert(err.message))
-      // this.$router.push({ path: '/users' })
     }
   }
 }

@@ -7,7 +7,7 @@
       </h4>
       <tag-users-1 :users2="users1"></tag-users-1>
     </div>
-    <button type="button" class="btn btn-primary" @click="triggerShowHide">change visible</button>
+    <!--<button type="button" class="btn btn-primary" @click="triggerShowHide">change visible</button>-->
     <button type="button" class="btn btn-success" @click="addUser">Add</button>
   </div>
 </template>
@@ -17,6 +17,11 @@ import Users2 from '@/components/Users2.vue'
 // import users0 from '@/views/users.js'
 
 import axios from 'axios'
+
+// const xhr = new XMLHttpRequest()
+
+const API_SERVER = 'http://localhost:3001'
+// const API_SERVER = 'https://api.limestudio.ru/apiservervue'
 
 export default {
   name: 'Users1',
@@ -36,17 +41,26 @@ export default {
     }
   },
   mounted() {
-    axios
-      .get('http://127.0.0.1:3000/api/users')
-      .then(response => response.data)
-      .then(users => (this.users1 = users))
+    this.load()
   },
   methods: {
+    load() {
+      /*      xhr.open('GET', API_SERVER + '/users')
+      xhr.send()
+      xhr.onload = () => {
+        this.users1 = JSON.parse(xhr.responseText)
+      }*/
+
+      axios
+        .get(API_SERVER + '/users')
+        .then(response => response.data)
+        .then(users => (this.users1 = users))
+    },
     triggerShowHide() {
       this.isVisible = !this.isVisible
     },
     addUser() {
-      this.$router.push({ path: '/user' })
+      this.$router.push({ path: '/users/new' })
     }
     /*                    amountUsersMethods () {
                                 return this.users ? this.users.length : 0
