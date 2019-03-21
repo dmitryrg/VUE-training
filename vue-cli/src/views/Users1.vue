@@ -5,7 +5,17 @@
         <!--Количество пользователей {{amountUsersMethods()}}-->
         Количество пользователей {{ amountUsersComputed }}
       </h4>
-      <tag-users-1 :users2="users1"></tag-users-1>
+      <tag-users-1 :users2="users1">
+        <!--        <template slot="table-header">
+
+        </template>
+        <template slot="table-row" slot-scope="{ user1 }">
+
+        </template>
+        <template v-slot:button-area="{ checkChildMethod1 }">
+          <button v-show="false" type="button" @click="checkChildMethod1">checkChildMethod</button>
+        </template>-->
+      </tag-users-1>
     </div>
     <!--<button type="button" class="btn btn-primary" @click="triggerShowHide">change visible</button>-->
     <button type="button" class="btn btn-success" @click="addUser">Add</button>
@@ -17,18 +27,22 @@ import Users2 from '@/components/Users2.vue'
 // import users0 from '@/views/users.js'
 
 import axios from 'axios'
-
 // const xhr = new XMLHttpRequest()
 
 const API_SERVER = 'http://localhost:3001'
 // const API_SERVER = 'https://api.limestudio.ru/apiservervue'
+const DEFAULT_IMAGE = './avatars/default.png'
+// import { formatDate } from '@/functions/formatters.js'
 
 export default {
   name: 'Users1',
+  filters: {
+    // formatDate
+  },
   components: {
     'tag-users-1': Users2
   },
-  data: function() {
+  data: () => {
     return {
       users1: [],
       isVisible: true,
@@ -44,6 +58,9 @@ export default {
     this.load()
   },
   methods: {
+    fillVal(val) {
+      return val ? `.${val}` : DEFAULT_IMAGE
+    },
     load() {
       /*      xhr.open('GET', API_SERVER + '/users')
       xhr.send()
@@ -71,6 +88,9 @@ export default {
 
 <style scoped>
 button {
-  margin: 5px;
+  margin: 20px 5px;
+}
+img {
+  width: 50px;
 }
 </style>

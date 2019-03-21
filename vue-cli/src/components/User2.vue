@@ -14,12 +14,47 @@
       <input v-model="localUser2.lastName" type="text" class="form-control" />
     </div>
     <div class="form-group">
-      <label>Отчество</label>
-      <input v-model="localUser2.patronymic" type="text" class="form-control" />
+      <label>Аватар</label>
+      <div class="contain-float">
+        <img :src="fillVal(localUser2.avatar)" />
+        <slot name="my-slot-name"></slot>
+      </div>
     </div>
     <div class="form-group">
-      <label>Аватар</label>
-      <img :src="fillVal(localUser2.avatar)" />
+      <label>Статус</label>
+      <input v-model="localUser2.isActive" type="checkbox" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Баланс</label>
+      <input v-model="localUser2.balance" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Возраст</label>
+      <input v-model="localUser2.age" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Компания</label>
+      <input v-model="localUser2.company" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Эл. почта</label>
+      <input v-model="localUser2.email" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Телефон</label>
+      <input v-model="localUser2.phone" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Адрес</label>
+      <input v-model="localUser2.address" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Интересы</label>
+      <input v-model="localUser2.about" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Дата регистрации</label>
+      <input v-model="localUser2.registered" type="text" class="form-control" />
     </div>
   </div>
 </template>
@@ -58,7 +93,8 @@ export default {
   },
   methods: {
     fillVal(val) {
-      return val ? val : DEFAULT_IMAGE
+      // точка ставится уже либо в шаблоне
+      return val ? `.${val}` : DEFAULT_IMAGE
     },
     updateUser2Up() {
       this.$emit('update-user', copyObj(this.localUser2)) // генерим свое событие update-user и закидываем туда  localUser2
@@ -75,5 +111,14 @@ export default {
 <style scoped>
 img {
   width: 100px;
+  margin: 20px;
+  float: left;
+}
+.contain-float:after {
+  content: '.';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
 </style>

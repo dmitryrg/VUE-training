@@ -5,7 +5,7 @@
       "firstName": "Igor",
       "lastName": "Ivanov",
       "patronymic": "Vitalievich",
-      "avatar": "./avatars/1.jpg"
+      "avatar": "/avatars/1.jpg"
     },
     {
       "id": 5,
@@ -19,21 +19,21 @@
       "firstName": "Sergey",
       "lastName": "Duhov",
       "patronymic": "Pavlovich",
-      "avatar": "./avatars/3.jpg"
+      "avatar": "/avatars/3.jpg"
     },
     {
       "id": 15,
       "firstName": "Alexandra",
       "lastName": "Blakeeva",
       "patronymic": "Evgenievna",
-      "avatar": "./avatars/4.jpg"
+      "avatar": "/avatars/4.jpg"
     },
     {
       "id": 30,
       "firstName": "Vladimir",
       "lastName": "Kovalev",
       "patronymic": "Sergeevich",
-      "avatar": "./avatars/5.jpg"
+      "avatar": "/avatars/5.jpg"
     }
   ]
 }

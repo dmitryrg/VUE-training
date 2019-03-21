@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint --fix",
-    "db": "json-server --watch /db/users.json --port 3003"
+    "db": "json-server --watch /db/users.json --port 3003",
+    "api": "nodemon ./server/serverHttp/server.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -15,6 +16,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-favicon": "^2.0.1",
     "koa-router": "^7.4.0",
+    "moment": "^2.24.0",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1"
   },
