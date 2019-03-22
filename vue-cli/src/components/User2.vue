@@ -16,7 +16,7 @@
     <div class="form-group">
       <label>Аватар</label>
       <div class="contain-float">
-        <img :src="fillVal(localUser2.avatar)" />
+        <img :src="makeUrlImage(localUser2.avatar)" />
         <slot name="my-slot-name"></slot>
       </div>
     </div>
@@ -63,8 +63,7 @@
 // import equalObj from '@/functions/deep.js'
 
 import { copyObj, equalObj } from '@/functions/deep.js'
-
-const DEFAULT_IMAGE = './avatars/default.png'
+import { makeUrlImage } from '@/functions/paths.js'
 
 export default {
   name: 'User2',
@@ -92,10 +91,7 @@ export default {
     }
   },
   methods: {
-    fillVal(val) {
-      // точка ставится уже либо в шаблоне
-      return val ? `.${val}` : DEFAULT_IMAGE
-    },
+    makeUrlImage,
     updateUser2Up() {
       this.$emit('update-user', copyObj(this.localUser2)) // генерим свое событие update-user и закидываем туда  localUser2
       console.log('this.localUser2 Up ->', this.localUser2) // debug

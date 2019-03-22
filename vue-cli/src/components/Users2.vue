@@ -45,7 +45,7 @@
             <td>
               <span> {{ user2.registered | formatDate }}</span>
             </td>
-            <td><img :src="fillVal(user2.avatar)" /></td>
+            <td><img :src="makeUrlImage(user2.avatar)" /></td>
           </slot>
         </router-link>
       </tbody>
@@ -63,12 +63,10 @@
 </template>
 
 <script>
-const DEFAULT_IMAGE = './avatars/default.png'
+// const DEFAULT_IMAGE = './avatars/default.png'
 import { formatDate } from '@/functions/formatters.js'
-
-const DEFAULT_START_PAGE = 1
-const POSSIBLE_AMOUNT_ON_PAGE = [10, 20, 50]
-const DEFAULT_AMOUNT_ON_PAGE_INDEX = 0
+import { makeUrlImage, makePathUser } from '@/functions/paths.js'
+import config from '@/config.js'
 
 export default {
   name: 'Users2',
@@ -83,9 +81,9 @@ export default {
   },
   data: () => {
     return {
-      possibleAmounts: POSSIBLE_AMOUNT_ON_PAGE,
-      rowOnPage: POSSIBLE_AMOUNT_ON_PAGE[DEFAULT_AMOUNT_ON_PAGE_INDEX],
-      currentPage: DEFAULT_START_PAGE
+      possibleAmounts: config.paging.possibleAmountOnPage,
+      rowOnPage: config.paging.possibleAmountOnPage[config.paging.defaultAmountOnPageIndex],
+      currentPage: config.paging.defaultStartPage
     }
   },
   computed: {
@@ -116,25 +114,21 @@ export default {
     }
   },
   methods: {
-    fillVal(val) {
-      return val ? `.${val}` : DEFAULT_IMAGE
-    },
-    makePathUser(user) {
-      return '/users/' + user.id
-    },
+    makeUrlImage,
+    makePathUser,
     checkChildMethod2() {
       alert('checkChildMethod works!')
     },
     amountChoiced(event) {
       this.rowOnPage = this.possibleAmounts[event.target.value]
-      this.currentPage = DEFAULT_START_PAGE
+      this.currentPage = config.paging.defaultStartPage
     },
     pageChoice(pageNumber) {
       this.currentPage = pageNumber
     },
     isActive(page) {
-      if (page == this.currentPage) return 'active'
-      else return ''
+      if (page == this.currentPage) return 'active-page-select'
+      else return 'passive-page-select'
     }
   }
 }
@@ -144,13 +138,16 @@ export default {
 img {
   width: 50px;
 }
-div > span {
+.active-page-select,
+.passive-page-select {
   margin: 30px 10px;
   padding: 5px 30px;
+}
+.passive-page-select {
   background: #d7f0f3;
   text-decoration: underline;
 }
-.active {
+.active-page-select {
   text-decoration: none;
   background: #ffd6d6;
 }
