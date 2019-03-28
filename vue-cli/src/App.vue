@@ -16,18 +16,18 @@
       <div id="navbarCollapse" class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
           <!--<router-link to="/" tag="li" class="nav-item" exact active-class="active">-->
-          <router-view to="/" tag="li" class="nav-item" exact>
+          <router-link to="/" tag="li" class="nav-item" exact>
             <a class="nav-link">Home</a>
-          </router-view>
-          <router-view to="/about" tag="li" class="nav-item">
+          </router-link>
+          <router-link to="/about" tag="li" class="nav-item">
             <a class="nav-link">About</a>
-          </router-view>
-          <router-view to="/users" tag="li" class="nav-item">
+          </router-link>
+          <router-link to="/users" tag="li" class="nav-item">
             <a class="nav-link">Users</a>
-          </router-view>
-          <router-view to="/phones" tag="li" class="nav-item">
+          </router-link>
+          <router-link to="/phones" tag="li" class="nav-item">
             <a class="nav-link">Phones</a>
-          </router-view>
+          </router-link>
         </ul>
       </div>
     </nav>
