@@ -251,13 +251,13 @@ http
 
                     // проходим по всем ключам прилетевшего объекта и меняем их в объекте базы данных
                     for (let key in requestBodyObj) {
-                      if (!proccessedRecord.hasOwnProperty(key)) {
+                      /*                      if (!proccessedRecord.hasOwnProperty(key)) {
                         errorEnd(
                           400,
                           `Record in db have not field "${key}", API query "${request.method}"`
                         )
                         return
-                      }
+                      }*/
                       proccessedRecord[key] = requestBodyObj[key]
                     }
 
@@ -404,6 +404,7 @@ http
 
     function errorEnd(code, message) {
       console.log('errorEnd code ->', code) // debug
+      console.log('message ->', message) // debug
       response.writeHead(code, {
         'Access-Control-Allow-Credentials': true,
         'Access-Control-Allow-Origin': request.headers['origin'] || '*',

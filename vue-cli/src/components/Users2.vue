@@ -23,7 +23,7 @@
           </tr>
         </slot>
 
-        <slot name="button-area" :checkChildMethod1="checkChildMethod2"> </slot>
+        <slot :checkChildMethod1="checkChildMethod2" name="button-area"> </slot>
       </thead>
       <tbody>
         <router-link
@@ -32,7 +32,7 @@
           :to="makePathUser(user2)"
           tag="tr"
         >
-          <slot name="table-row" :user1="user2">
+          <slot :user1="user2" name="table-row">
             <td>
               <span> {{ user2.id }}</span>
             </td>
@@ -43,7 +43,7 @@
               <span> {{ user2.lastName }}</span>
             </td>
             <td>
-              <span> {{ user2.registered | formatDate }}</span>
+              <span> {{ user2.registered }}</span>
             </td>
             <td><img :src="makeUrlImage(user2.avatar)" /></td>
           </slot>
@@ -54,7 +54,7 @@
       <span
         v-for="page of allPages"
         :key="page"
-        :class="isActive(page)"
+        :class="{ 'active-page': page === currentPage, page: true }"
         @click="pageChoice(page)"
         >{{ page }}</span
       >
@@ -125,11 +125,11 @@ export default {
     },
     pageChoice(pageNumber) {
       this.currentPage = pageNumber
-    },
+    } /*,
     isActive(page) {
       if (page == this.currentPage) return 'active-page-select'
       else return 'passive-page-select'
-    }
+    }*/
   }
 }
 </script>
@@ -138,16 +138,13 @@ export default {
 img {
   width: 50px;
 }
-.active-page-select,
-.passive-page-select {
+.page {
   margin: 30px 10px;
   padding: 5px 30px;
-}
-.passive-page-select {
   background: #d7f0f3;
   text-decoration: underline;
 }
-.active-page-select {
+.active-page {
   text-decoration: none;
   background: #ffd6d6;
 }

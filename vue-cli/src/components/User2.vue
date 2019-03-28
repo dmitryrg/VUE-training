@@ -3,9 +3,9 @@
     <div class="form-group">
       <label>Имя</label>
       <input
+        :value="localUser2.firstName"
         type="text"
         class="form-control"
-        :value="localUser2.firstName"
         @input="localUser2.firstName = $event.target.value"
       />
     </div>
@@ -53,20 +53,36 @@
       <input v-model="localUser2.about" type="text" class="form-control" />
     </div>
     <div class="form-group">
+      <label>Интересы</label>
+      <input v-model="localUser2.about" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Дата рождения</label>
+      <!--<input v-model="localUser2.registered" type="text" class="form-control" />-->
+      <datepicker v-model="localUser2.birthday" :id-ref="'dateBirthday'"></datepicker>
+    </div>
+    <div class="form-group">
       <label>Дата регистрации</label>
-      <input v-model="localUser2.registered" type="text" class="form-control" />
+      <!--<input v-model="localUser2.registered" type="text" class="form-control" />-->
+      <datepicker v-model="localUser2.registered" :id-ref="'dateRegistered'"></datepicker>
     </div>
   </div>
 </template>
-
+<!--:date3="localUser2.birthday"
+@changePicker3="localUser2.birthday = $event"-->
 <script>
 // import equalObj from '@/functions/deep.js'
-
+// import { formatDate } from '@/functions/formatters.js'
 import { copyObj, equalObj } from '@/functions/deep.js'
 import { makeUrlImage } from '@/functions/paths.js'
+import Datepicker from '@/components/datepicker.vue'
 
 export default {
   name: 'User2',
+  components: {
+    datepicker: Datepicker
+    // datepicker: () => import('@/components/datepicker')
+  },
   props: {
     user2: {
       type: Object,

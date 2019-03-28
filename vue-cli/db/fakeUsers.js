@@ -18,7 +18,9 @@
       address:
         '{{integer(100, 999)}} {{street()}}, {{city()}}, {{state()}}, {{integer(100, 10000)}}',
       about: '{{lorem(1, "paragraphs")}}',
-      registered: '{{moment(this.date(new Date(2014, 0, 1), new Date())).format("LLLL")}}'
+      birthday:
+        '{{moment(this.date(new Date(1950, 0, 1), new Date(2000, 0, 1))).format("DD.MM.YYYY")}}',
+      registered: '{{moment(this.date(new Date(2014, 0, 1), new Date())).format("DD.MM.YYYY")}}'
     }
   }
 ]

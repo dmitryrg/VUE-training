@@ -12,7 +12,7 @@
             v-show="hasAvatar && !isNew"
             type="button"
             class="btn btn-secondary"
-            @click="delAvatar"
+            @click="delAvatarButton"
           >
             del
           </button>
@@ -21,8 +21,8 @@
     </tag-user-1>
 
     <button type="button" class="btn btn-primary" @click="goBack">Back</button>
-    <button type="button" class="btn btn-success" @click="save">Save</button>
-    <button v-show="!isNew" type="button" class="btn btn-danger" @click="del">Del</button>
+    <button type="button" class="btn btn-success" @click="saveUser">Save</button>
+    <button v-show="!isNew" type="button" class="btn btn-danger" @click="delUser">Del</button>
 
     <input v-show="false" ref="sadDialog" type="file" @change="fileChoiced" />
 
@@ -35,6 +35,7 @@
 <script>
 import axios from 'axios'
 import User2 from '@/components/User2.vue'
+import { userEmpty } from '@/functions/data.js'
 
 // const xhr = new XMLHttpRequest()
 
@@ -69,16 +70,11 @@ export default {
   mounted() {
     // для случая когда новый пользователь
     if (this.isNew) {
-      this.user1 = {
-        firstName: '',
-        lastName: '',
-        patronymic: '',
-        avatar: ''
-      }
+      this.user1 = Object.assign({}, userEmpty)
       return
     }
 
-    this.load()
+    this.loadUser()
   },
   methods: {
     goBack() {
@@ -88,34 +84,20 @@ export default {
       // с нижнего уровня вылетел юзер 2 и мы его загоняем в юзер 1
       this.user1 = localUser2
     },
-    load() {
-      /*      xhr.open('GET', API_SERVER + '/users/' + this.idUser)
-      xhr.send()
-      xhr.onload = () => {
-        this.user1 = JSON.parse(xhr.responseText)
-      }*/
+    loadUser() {
       axios
         .get(API_SERVER + '/users/' + this.idUser)
         .then(response => response.data)
         .then(user => (this.user1 = user))
         .catch(err => alert(err.message))
     },
-    save(event) {
+    saveUser() {
       if (this.isNew) {
-        // добавление нового пользователя
-
-        /*        xhr.open('POST', API_SERVER + '/users')
-        xhr.setRequestHeader('Content-type', 'application/json')
-        xhr.send(JSON.stringify(this.user1))
-        xhr.onload = () => {
-          console.log(' post xhr.responseText ->', xhr.responseText) // debug
-        }*/
-
         axios
           .post(API_SERVER + '/users', this.user1)
           .then(() => {
             // если запущена по клику, то прилетит событие
-            if (event) this.$router.push({ path: '/users' })
+            // if (event) this.$router.push({ path: '/users' })
           })
           .catch(err => alert(err.message))
       } else {
@@ -123,12 +105,12 @@ export default {
         axios
           .put(API_SERVER + '/users/' + this.idUser, this.user1)
           .then(() => {
-            if (event) this.$router.push({ path: '/users' })
+            // if (event) this.$router.push({ path: '/users' })
           })
           .catch(err => alert(err.message))
       }
     },
-    del() {
+    delUser() {
       axios
         .delete(API_SERVER + '/users/' + this.idUser)
         .then(() => this.$router.push({ path: '/users' }))
@@ -138,14 +120,14 @@ export default {
       // по кнопке вызываем клик на диалоге запроса файла
       this.$refs.sadDialog.click()
     },
-    delAvatar() {
+    delAvatarButton() {
       this.delAvatarApi(this.user1['avatar'])
       this.user1['avatar'] = ''
     },
     delAvatarApi(filenameAvatar) {
       axios
         .delete(API_SERVER + '/picture' + filenameAvatar)
-        .then(() => this.save(null))
+        .then(() => this.saveUser())
         .catch(err => alert(err.message))
     },
     fileChoiced() {
@@ -153,19 +135,8 @@ export default {
       // this.$refs.sadDialog.files[0]
       // this.$refs.sadDialog.value - имя файл
       // const fileSend = new FormData()
-
       // fileSend.append('image', this.$refs.sadDialog.files[0])
 
-      /*
-      xhr.open('POST', API_SERVER + '/picture/' + this.idUser)
-      xhr.setRequestHeader('Content-type', 'image/jpg')
-      xhr.send(this.$refs.sadDialog.files[0])
-      xhr.onload = () => {
-        this.user1['avatar'] = '.' + JSON.parse(xhr.responseText).link
-        console.log(' post xhr.responseText ->', this.user1['avatar']) // debug
-        this.$refs.sadDialog.value = ''
-      }
-*/
       const fileNameChoiced = this.$refs.sadDialog.value
       const extname = fileNameChoiced.substring(fileNameChoiced.lastIndexOf('.') + 1)
       const fileNameCreating = `${PICTURE_DIR}/${this.idUser}-${Date.now()}.${extname}`
@@ -182,7 +153,7 @@ export default {
           if (prevAvatar) {
             this.delAvatarApi(prevAvatar)
           } else {
-            this.save(null)
+            this.saveUser()
           }
         })
         .catch(err => alert(err.message))

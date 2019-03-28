@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="isVisible">
+    <div>
       <h4>
         <!--Количество пользователей {{amountUsersMethods()}}-->
         Количество пользователей {{ amountUsersComputed }}
@@ -31,9 +31,7 @@ export default {
   },
   data: () => {
     return {
-      users1: [],
-      isVisible: true,
-      tooltip: 'всплывающая подсказка'
+      users1: []
     }
   },
   computed: {
@@ -56,9 +54,6 @@ export default {
         .get(config.serverApi + '/users')
         .then(response => response.data)
         .then(users => (this.users1 = users))
-    },
-    triggerShowHide() {
-      this.isVisible = !this.isVisible
     },
     addUser() {
       this.$router.push({ path: '/users/new' })
