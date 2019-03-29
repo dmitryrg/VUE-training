@@ -5,38 +5,31 @@
         <!--Количество пользователей {{amountUsersMethods()}}-->
         Количество пользователей {{ amountUsersComputed }}
       </h4>
-      <tag-users-1 :users2="users1"> </tag-users-1>
+      <tag-users-low :users="users"> </tag-users-low>
     </div>
     <button type="button" class="btn btn-success" @click="addUser">Add</button>
   </div>
 </template>
 
 <script>
-import Users2 from '@/components/Users2.vue'
-// import users0 from '@/views/users.js'
+import UsersLow from '@/components/UsersLow.vue'
 
 import axios from 'axios'
 import config from '@/config.js'
-// const xhr = new XMLHttpRequest()
-
-// import { formatDate } from '@/functions/formatters.js'
 
 export default {
-  name: 'Users1',
-  filters: {
-    // formatDate
-  },
+  name: 'UsersTop',
   components: {
-    'tag-users-1': Users2
+    'tag-users-low': UsersLow
   },
   data: () => {
     return {
-      users1: []
+      users: []
     }
   },
   computed: {
     amountUsersComputed() {
-      return this.users1 ? this.users1.length : 0
+      return this.users ? this.users.length : 0
     }
   },
   mounted() {
@@ -44,16 +37,10 @@ export default {
   },
   methods: {
     load() {
-      /*      xhr.open('GET', config.serverApi + '/users')
-      xhr.send()
-      xhr.onload = () => {
-        this.users1 = JSON.parse(xhr.responseText)
-      }*/
-
       axios
         .get(config.serverApi + '/users')
         .then(response => response.data)
-        .then(users => (this.users1 = users))
+        .then(users => (this.users = users))
     },
     addUser() {
       this.$router.push({ path: '/users/new' })

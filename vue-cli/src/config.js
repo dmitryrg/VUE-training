@@ -14,9 +14,7 @@ export default Object.assign(
   {
     defaultImage: '/avatars/default.png',
     paging: {
-      defaultStartPage: 1,
-      possibleAmountOnPage: [10, 20, 50, 100],
-      defaultAmountOnPageIndex: 0
+      possibleAmountOnPage: [10, 20, 50, 100]
     }
   }
 )

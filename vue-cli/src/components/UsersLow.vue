@@ -1,14 +1,12 @@
 <template>
   <div>
-    <!--<input type="text" v-model="rowOnPage" />-->
     <form @change="amountChoiced">
-      <p>
-        <select name="choiceAmount">
-          <option v-for="(amount, index) of possibleAmounts" :key="index" :value="index">{{
-            amount
-          }}</option>
-        </select>
-      </p>
+      <select name="choiceAmount">
+        <!--<option v-for="(amount, index) of possibleAmounts" :key="index" :value="index">-->
+        <option v-for="amount of possibleAmounts" :key="amount" :value="amount">
+          {{ amount }}
+        </option>
+      </select>
     </form>
 
     <table v-show="isListReady" class="table table-hover">
@@ -23,29 +21,24 @@
           </tr>
         </slot>
 
-        <slot :checkChildMethod1="checkChildMethod2" name="button-area"> </slot>
+        <slot :checkChildMethodTop="checkChildMethod" name="button-area"></slot>
       </thead>
       <tbody>
-        <router-link
-          v-for="user2 of shownUsers2"
-          :key="user2.id"
-          :to="makePathUser(user2)"
-          tag="tr"
-        >
-          <slot :user1="user2" name="table-row">
+        <router-link v-for="user of shownUsers" :key="user.id" :to="makePathUser(user)" tag="tr">
+          <slot :user="user" name="table-row">
             <td>
-              <span> {{ user2.id }}</span>
+              <span> {{ user.id }}</span>
             </td>
             <td>
-              <span> {{ user2.firstName }}</span>
+              <span> {{ user.firstName }}</span>
             </td>
             <td>
-              <span> {{ user2.lastName }}</span>
+              <span> {{ user.lastName }}</span>
             </td>
             <td>
-              <span> {{ user2.registered }}</span>
+              <span> {{ user.registered }}</span>
             </td>
-            <td><img :src="makeUrlImage(user2.avatar)" /></td>
+            <td><img :src="makeUrlImage(user.avatar)" /></td>
           </slot>
         </router-link>
       </tbody>
@@ -54,7 +47,7 @@
       <span
         v-for="page of allPages"
         :key="page"
-        :class="{ 'active-page': page === currentPage, page: true }"
+        :class="{ 'active-page': page === currentPage, 'common-page': true }"
         @click="pageChoice(page)"
         >{{ page }}</span
       >
@@ -63,18 +56,13 @@
 </template>
 
 <script>
-// const DEFAULT_IMAGE = './avatars/default.png'
-import { formatDate } from '@/functions/formatters.js'
 import { makeUrlImage, makePathUser } from '@/functions/paths.js'
 import config from '@/config.js'
 
 export default {
-  name: 'Users2',
-  filters: {
-    formatDate
-  },
+  name: 'UsersLow',
   props: {
-    users2: {
+    users: {
       type: Array,
       required: true
     }
@@ -82,17 +70,17 @@ export default {
   data: () => {
     return {
       possibleAmounts: config.paging.possibleAmountOnPage,
-      rowOnPage: config.paging.possibleAmountOnPage[config.paging.defaultAmountOnPageIndex],
-      currentPage: config.paging.defaultStartPage
+      rowOnPage: config.paging.possibleAmountOnPage[0],
+      currentPage: 1
     }
   },
   computed: {
     isListReady() {
-      return !!this.users2.length
+      return this.users.length > 0
     },
-    shownUsers2() {
+    shownUsers() {
       if (this.isListReady) {
-        return this.users2.filter(
+        return this.users.filter(
           (elem, index) =>
             index < this.currentPage * this.rowOnPage &&
             index >= (this.currentPage - 1) * this.rowOnPage
@@ -105,7 +93,7 @@ export default {
       const allPages = []
 
       let i = 0
-      while (i * this.rowOnPage < this.users2.length) {
+      while (i * this.rowOnPage < this.users.length) {
         allPages.push(i + 1)
         i++
       }
@@ -116,20 +104,17 @@ export default {
   methods: {
     makeUrlImage,
     makePathUser,
-    checkChildMethod2() {
+    checkChildMethod() {
       alert('checkChildMethod works!')
     },
     amountChoiced(event) {
-      this.rowOnPage = this.possibleAmounts[event.target.value]
-      this.currentPage = config.paging.defaultStartPage
+      // this.rowOnPage = this.possibleAmounts[event.target.value]
+      this.rowOnPage = event.target.value
+      this.currentPage = 1
     },
     pageChoice(pageNumber) {
       this.currentPage = pageNumber
-    } /*,
-    isActive(page) {
-      if (page == this.currentPage) return 'active-page-select'
-      else return 'passive-page-select'
-    }*/
+    }
   }
 }
 </script>
@@ -138,14 +123,18 @@ export default {
 img {
   width: 50px;
 }
-.page {
+.common-page {
   margin: 30px 10px;
   padding: 5px 30px;
   background: #d7f0f3;
-  text-decoration: underline;
+  /*text-decoration: underline;*/
+}
+.common-page:hover {
+  background: #dcdcdc;
+  cursor: pointer;
 }
 .active-page {
-  text-decoration: none;
+  /*text-decoration: none;*/
   background: #ffd6d6;
 }
 </style>

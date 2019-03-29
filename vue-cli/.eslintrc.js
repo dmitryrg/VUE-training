@@ -12,7 +12,14 @@ module.exports = {
       'kebab-case',
       {
         registeredComponentsOnly: false,
-        ignores: []
+        ignores: ['/^:is/']
+      }
+    ],
+    'vue/attribute-hyphenation': [
+      'error',
+      'never',
+      {
+        ignore: []
       }
     ]
   },

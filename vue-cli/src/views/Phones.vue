@@ -5,7 +5,7 @@
         <!--Количество пользователей {{amountUsersMethods()}}-->
         Количество пользователей {{ amountPhones }}
       </h4>
-      <tag-users-1 :users2="phones1">
+      <tag-users-low :users="phones">
         <template slot="table-header">
           <tr>
             <th><span> #</span></th>
@@ -14,49 +14,50 @@
             <th><span>Телефон</span></th>
           </tr>
         </template>
-        <template slot="table-row" slot-scope="{ user1 }">
+        <template slot="table-row" slot-scope="{ user }">
           <td>
-            <span> {{ user1.id }}</span>
+            <span> {{ user.id }}</span>
           </td>
           <td>
-            <span> {{ user1.firstName }}</span>
+            <span> {{ user.firstName }}</span>
           </td>
           <td>
-            <span> {{ user1.lastName }}</span>
+            <span> {{ user.lastName }}</span>
           </td>
           <td>
-            <span> {{ user1.phone }}</span>
+            <span> {{ user.phone }}</span>
           </td>
         </template>
-        <template v-slot:button-area="{ checkChildMethod1 }">
-          <button type="button" @click="checkChildMethod1">checkChildMethod</button>
+        <template slot="button-area" slot-scope="{ checkChildMethodTop }">
+          <!--<template v-slot:button-area="{ checkChildMethodTop }"> // не работает после изменения версии вью-->
+          <button type="button" @click="checkChildMethodTop">checkChildMethod</button>
         </template>
-      </tag-users-1>
+      </tag-users-low>
     </div>
   </div>
 </template>
 
 <script>
-import Users2 from '@/components/Users2.vue'
+import UsersLow from '@/components/UsersLow.vue'
 import config from '@/config.js'
 
 import axios from 'axios'
 
 export default {
-  name: 'Phones1',
+  name: 'Phones',
   components: {
-    'tag-users-1': Users2
+    'tag-users-low': UsersLow
   },
   data: function() {
     return {
-      phones1: [],
+      phones: [],
       isVisible: true,
       tooltip: 'всплывающая подсказка'
     }
   },
   computed: {
     amountPhones() {
-      return this.phones1 ? this.phones1.length : 0
+      return this.phones ? this.phones.length : 0
     }
   },
   mounted() {
@@ -65,7 +66,7 @@ export default {
   methods: {
     async loadPhones() {
       try {
-        this.phones1 = (await axios.get(config.serverApi + '/users')).data
+        this.phones = (await axios.get(config.serverApi + '/users')).data
       } catch (err) {
         alert(err.message)
       }

@@ -3,9 +3,9 @@ import Router from 'vue-router'
 
 import Home from '@/views/Home.vue'
 import About from '@/views/About.vue'
-import Users1 from '@/views/Users1.vue'
-import User1 from '@/views/User1.vue'
-import Phones1 from '@/views/Phones1.vue'
+import UsersTop from '@/views/UsersTop.vue'
+import UserTop from '@/views/UserTop.vue'
+import Phones from '@/views/Phones.vue'
 
 Vue.use(Router)
 
@@ -26,22 +26,22 @@ export default new Router({
     {
       path: '/users',
       name: 'users', // зачем нужен параметр Name если к тэгу м
-      component: Users1
+      component: UsersTop
     },
     {
       path: '/phones',
       name: 'phones', // зачем нужен параметр Name если к тэгу м
-      component: Phones1
+      component: Phones
     },
     {
       path: '/users/:idPath',
       name: 'userPut',
-      component: User1
+      component: UserTop
     },
     {
       path: '/users/new',
       name: 'userAdd',
-      component: User1
+      component: UserTop
     }
   ]
 })

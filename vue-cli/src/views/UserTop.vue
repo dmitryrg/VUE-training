@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tag-user-1 :user2="user1" :is-card-ready2="isCardReady1" @update-user="updateUser1">
+    <tag-user-low :userTop="user" :isCardReady="isCardReady" @update-user-top="updateUser">
       <template slot="my-slot-name">
         <div>
           <button v-show="!isNew" type="button" class="btn btn-secondary" @click="addAvatar">
@@ -18,7 +18,7 @@
           </button>
         </div>
       </template>
-    </tag-user-1>
+    </tag-user-low>
 
     <button type="button" class="btn btn-primary" @click="goBack">Back</button>
     <button type="button" class="btn btn-success" @click="saveUser">Save</button>
@@ -27,14 +27,14 @@
     <input v-show="false" ref="sadDialog" type="file" @change="fileChoiced" />
 
     <!--    <pre>
-      {{ user1 }}
+      {{ user }}
     </pre>-->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import User2 from '@/components/User2.vue'
+import UserLow from '@/components/UserLow.vue'
 import { userEmpty } from '@/functions/data.js'
 
 // const xhr = new XMLHttpRequest()
@@ -44,13 +44,13 @@ const API_SERVER = 'http://localhost:3001'
 const PICTURE_DIR = '/avatars'
 
 export default {
-  name: 'User1',
+  name: 'UserTop',
   components: {
-    'tag-user-1': User2
+    'tag-user-low': UserLow
   },
   data: () => {
     return {
-      user1: {}
+      user: {}
     }
   },
   computed: {
@@ -60,17 +60,17 @@ export default {
     isNew() {
       return this.idUser === 'new'
     },
-    isCardReady1() {
-      return !!Object.keys(this.user1).length
+    isCardReady() {
+      return !!Object.keys(this.user).length
     },
     hasAvatar() {
-      return !!this.user1['avatar']
+      return !!this.user['avatar']
     }
   },
   mounted() {
     // для случая когда новый пользователь
     if (this.isNew) {
-      this.user1 = Object.assign({}, userEmpty)
+      this.user = Object.assign({}, userEmpty)
       return
     }
 
@@ -80,35 +80,41 @@ export default {
     goBack() {
       this.$router.push({ path: '/users' })
     },
-    updateUser1(localUser2) {
+    updateUser(userLow) {
       // с нижнего уровня вылетел юзер 2 и мы его загоняем в юзер 1
-      this.user1 = localUser2
+      this.user = userLow
     },
     loadUser() {
       axios
         .get(API_SERVER + '/users/' + this.idUser)
         .then(response => response.data)
-        .then(user => (this.user1 = user))
+        .then(user => (this.user = user))
         .catch(err => alert(err.message))
     },
     saveUser() {
-      if (this.isNew) {
-        axios
-          .post(API_SERVER + '/users', this.user1)
-          .then(() => {
-            // если запущена по клику, то прилетит событие
-            // if (event) this.$router.push({ path: '/users' })
-          })
-          .catch(err => alert(err.message))
-      } else {
-        // редактирование существующего пользователя
-        axios
-          .put(API_SERVER + '/users/' + this.idUser, this.user1)
-          .then(() => {
-            // if (event) this.$router.push({ path: '/users' })
-          })
-          .catch(err => alert(err.message))
-      }
+      this.$validator.validateAll().then(isValid => {
+        if (!isValid) {
+          alert('не заполнено одно из полей')
+          return
+        }
+        if (this.isNew) {
+          axios
+            .post(API_SERVER + '/users', this.user)
+            .then(() => {
+              // если запущена по клику, то прилетит событие
+              if (event) this.$router.push({ path: '/users' })
+            })
+            .catch(err => alert(err.message))
+        } else {
+          // редактирование существующего пользователя
+          axios
+            .put(API_SERVER + '/users/' + this.idUser, this.user)
+            .then(() => {
+              if (event) this.$router.push({ path: '/users' })
+            })
+            .catch(err => alert(err.message))
+        }
+      })
     },
     delUser() {
       axios
@@ -121,8 +127,8 @@ export default {
       this.$refs.sadDialog.click()
     },
     delAvatarButton() {
-      this.delAvatarApi(this.user1['avatar'])
-      this.user1['avatar'] = ''
+      this.delAvatarApi(this.user['avatar'])
+      this.user['avatar'] = ''
     },
     delAvatarApi(filenameAvatar) {
       axios
@@ -145,9 +151,9 @@ export default {
         .post(API_SERVER + '/picture' + fileNameCreating, this.$refs.sadDialog.files[0])
         .then(response => {
           let prevAvatar = null
-          if (this.hasAvatar) prevAvatar = this.user1['avatar']
+          if (this.hasAvatar) prevAvatar = this.user['avatar']
           // в юзере путь в аватаре хранится без точки
-          this.user1['avatar'] = response.data.link
+          this.user['avatar'] = response.data.link
           this.$refs.sadDialog.value = ''
 
           if (prevAvatar) {
