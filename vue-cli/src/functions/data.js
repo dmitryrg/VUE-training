@@ -1,4 +1,11 @@
 export const userEmpty = {
+  // если не задать глючит дата-пикер, так как нет входного параметра
+  birthday: '',
+  registered: ''
+}
+
+export const userNewAdd = {
+  // новому пользователю добавляем поля
   isActive: false,
   balance: '',
   avatar: '',
@@ -9,7 +16,5 @@ export const userEmpty = {
   email: '',
   phone: '',
   address: '',
-  about: '',
-  birthday: '',
-  registered: ''
+  about: ''
 }

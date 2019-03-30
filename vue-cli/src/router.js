@@ -25,12 +25,12 @@ export default new Router({
     },
     {
       path: '/users',
-      name: 'users', // зачем нужен параметр Name если к тэгу м
+      name: 'users',
       component: UsersTop
     },
     {
       path: '/phones',
-      name: 'phones', // зачем нужен параметр Name если к тэгу м
+      name: 'phones',
       component: Phones
     },
     {

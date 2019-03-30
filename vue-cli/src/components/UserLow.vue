@@ -73,14 +73,12 @@
     </div>
   </div>
 </template>
-<!--:date3="userLow.birthday"
-@changePicker3="userLow.birthday = $event"-->
+
 <script>
-// import equalObj from '@/functions/deep.js'
-// import { formatDate } from '@/functions/formatters.js'
 import { copyObj, equalObj } from '@/functions/deep.js'
 import { makeUrlImage } from '@/functions/paths.js'
 import Datepicker from '@/components/datepicker.vue'
+import { userEmpty } from '@/functions/data.js'
 
 export default {
   name: 'UserLow',
@@ -100,7 +98,7 @@ export default {
     }
   },
   data: () => ({
-    userLow: {} // local userTop
+    userLow: userEmpty // local user
   }),
   watch: {
     userTop: {
@@ -115,7 +113,7 @@ export default {
   methods: {
     makeUrlImage,
     updateUserTop() {
-      this.$emit('update-user-top', copyObj(this.userLow)) // генерим свое событие update-userTop и закидываем туда  userLow
+      this.$emit('update-user-top', this.userLow) // генерим свое событие update-userTop и прокидываем туда  userLow
       console.log('userTop Up ->', this.userLow) // debug
     },
     updateUserLow() {

@@ -1,14 +1,6 @@
 <template>
   <div>
-    <form @change="amountChoiced">
-      <select name="choiceAmount">
-        <!--<option v-for="(amount, index) of possibleAmounts" :key="index" :value="index">-->
-        <option v-for="amount of possibleAmounts" :key="amount" :value="amount">
-          {{ amount }}
-        </option>
-      </select>
-    </form>
-
+    <tag-combobox :list="possibleAmounts" @choice-done="amountChoiced"> </tag-combobox>
     <table v-show="isListReady" class="table table-hover">
       <thead>
         <slot name="table-header">
@@ -43,24 +35,28 @@
         </router-link>
       </tbody>
     </table>
-    <div>
-      <span
-        v-for="page of allPages"
-        :key="page"
-        :class="{ 'active-page': page === currentPage, 'common-page': true }"
-        @click="pageChoice(page)"
-        >{{ page }}</span
-      >
-    </div>
+    <tag-pagination
+      :amountRows="users.length"
+      :rowsOnPage="rowsOnPage"
+      :currentPage="currentPage"
+      @page-choiced="pageChoiced"
+    ></tag-pagination>
+    <!--@page-choiced ="currentPage = $event"-->
   </div>
 </template>
 
 <script>
 import { makeUrlImage, makePathUser } from '@/functions/paths.js'
 import config from '@/config.js'
+import Combobox from '@/components/combobox.vue'
+import Pagination from '@/components/pagination.vue'
 
 export default {
   name: 'UsersLow',
+  components: {
+    'tag-combobox': Combobox,
+    'tag-pagination': Pagination
+  },
   props: {
     users: {
       type: Array,
@@ -69,8 +65,8 @@ export default {
   },
   data: () => {
     return {
-      possibleAmounts: config.paging.possibleAmountOnPage,
-      rowOnPage: config.paging.possibleAmountOnPage[0],
+      possibleAmounts: config.possibleAmountOnPage,
+      rowsOnPage: config.possibleAmountOnPage[0],
       currentPage: 1
     }
   },
@@ -82,23 +78,12 @@ export default {
       if (this.isListReady) {
         return this.users.filter(
           (elem, index) =>
-            index < this.currentPage * this.rowOnPage &&
-            index >= (this.currentPage - 1) * this.rowOnPage
+            index < this.currentPage * this.rowsOnPage &&
+            index >= (this.currentPage - 1) * this.rowsOnPage
         )
       } else {
         return []
       }
-    },
-    allPages() {
-      const allPages = []
-
-      let i = 0
-      while (i * this.rowOnPage < this.users.length) {
-        allPages.push(i + 1)
-        i++
-      }
-
-      return allPages
     }
   },
   methods: {
@@ -107,12 +92,11 @@ export default {
     checkChildMethod() {
       alert('checkChildMethod works!')
     },
-    amountChoiced(event) {
-      // this.rowOnPage = this.possibleAmounts[event.target.value]
-      this.rowOnPage = event.target.value
+    amountChoiced(amountRows) {
+      this.rowsOnPage = Number(amountRows)
       this.currentPage = 1
     },
-    pageChoice(pageNumber) {
+    pageChoiced(pageNumber) {
       this.currentPage = pageNumber
     }
   }
@@ -122,19 +106,5 @@ export default {
 <style scoped>
 img {
   width: 50px;
-}
-.common-page {
-  margin: 30px 10px;
-  padding: 5px 30px;
-  background: #d7f0f3;
-  /*text-decoration: underline;*/
-}
-.common-page:hover {
-  background: #dcdcdc;
-  cursor: pointer;
-}
-.active-page {
-  /*text-decoration: none;*/
-  background: #ffd6d6;
 }
 </style>

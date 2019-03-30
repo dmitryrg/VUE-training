@@ -35,13 +35,9 @@
 <script>
 import axios from 'axios'
 import UserLow from '@/components/UserLow.vue'
-import { userEmpty } from '@/functions/data.js'
-
-// const xhr = new XMLHttpRequest()
-
-const API_SERVER = 'http://localhost:3001'
-// const API_SERVER = 'https://api.limestudio.ru/apiservervue'
-const PICTURE_DIR = '/avatars'
+import { userEmpty, userNewAdd } from '@/functions/data.js'
+import config from '@/config.js'
+import { copyObj } from '@/functions/deep.js'
 
 export default {
   name: 'UserTop',
@@ -61,7 +57,7 @@ export default {
       return this.idUser === 'new'
     },
     isCardReady() {
-      return !!Object.keys(this.user).length
+      return Object.keys(this.user).length > Object.keys(userEmpty).length
     },
     hasAvatar() {
       return !!this.user['avatar']
@@ -70,7 +66,7 @@ export default {
   mounted() {
     // для случая когда новый пользователь
     if (this.isNew) {
-      this.user = Object.assign({}, userEmpty)
+      this.user = Object.assign({}, userEmpty, userNewAdd)
       return
     }
 
@@ -81,12 +77,12 @@ export default {
       this.$router.push({ path: '/users' })
     },
     updateUser(userLow) {
-      // с нижнего уровня вылетел юзер 2 и мы его загоняем в юзер 1
-      this.user = userLow
+      // с нижнего уровня вылетел юзер и мы его загоняем в верхний юзер
+      this.user = copyObj(userLow)
     },
     loadUser() {
       axios
-        .get(API_SERVER + '/users/' + this.idUser)
+        .get(config.serverApi + '/users/' + this.idUser)
         .then(response => response.data)
         .then(user => (this.user = user))
         .catch(err => alert(err.message))
@@ -99,7 +95,7 @@ export default {
         }
         if (this.isNew) {
           axios
-            .post(API_SERVER + '/users', this.user)
+            .post(config.serverApi + '/users', this.user)
             .then(() => {
               // если запущена по клику, то прилетит событие
               if (event) this.$router.push({ path: '/users' })
@@ -108,7 +104,7 @@ export default {
         } else {
           // редактирование существующего пользователя
           axios
-            .put(API_SERVER + '/users/' + this.idUser, this.user)
+            .put(config.serverApi + '/users/' + this.idUser, this.user)
             .then(() => {
               if (event) this.$router.push({ path: '/users' })
             })
@@ -118,7 +114,7 @@ export default {
     },
     delUser() {
       axios
-        .delete(API_SERVER + '/users/' + this.idUser)
+        .delete(config.serverApi + '/users/' + this.idUser)
         .then(() => this.$router.push({ path: '/users' }))
         .catch(err => alert(err.message))
     },
@@ -132,7 +128,7 @@ export default {
     },
     delAvatarApi(filenameAvatar) {
       axios
-        .delete(API_SERVER + '/picture' + filenameAvatar)
+        .delete(config.serverApi + '/picture' + filenameAvatar)
         .then(() => this.saveUser())
         .catch(err => alert(err.message))
     },
@@ -145,10 +141,10 @@ export default {
 
       const fileNameChoiced = this.$refs.sadDialog.value
       const extname = fileNameChoiced.substring(fileNameChoiced.lastIndexOf('.') + 1)
-      const fileNameCreating = `${PICTURE_DIR}/${this.idUser}-${Date.now()}.${extname}`
+      const fileNameCreating = `${config.pictureDir}/${this.idUser}-${Date.now()}.${extname}`
       console.log('fileNameCreating ->', fileNameCreating) // debug
       axios
-        .post(API_SERVER + '/picture' + fileNameCreating, this.$refs.sadDialog.files[0])
+        .post(config.serverApi + '/picture' + fileNameCreating, this.$refs.sadDialog.files[0])
         .then(response => {
           let prevAvatar = null
           if (this.hasAvatar) prevAvatar = this.user['avatar']

@@ -13,8 +13,7 @@ export default Object.assign(
   // постоянная часть
   {
     defaultImage: '/avatars/default.png',
-    paging: {
-      possibleAmountOnPage: [10, 20, 50, 100]
-    }
+    pictureDir: '/avatars',
+    possibleAmountOnPage: [10, 20, 50, 100]
   }
 )

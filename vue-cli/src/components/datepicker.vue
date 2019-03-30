@@ -16,7 +16,7 @@ export default {
   props: {
     date: {
       type: String,
-      required: false
+      required: true
     },
     idRef: {
       type: String,
