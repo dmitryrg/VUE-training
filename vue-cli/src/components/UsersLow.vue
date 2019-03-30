@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tag-combobox :list="possibleAmounts" @choice-done="amountChoiced"> </tag-combobox>
+    <tag-combobox :list="possibleAmounts" @choice-done="setRowsOnPage"> </tag-combobox>
     <table v-show="isListReady" class="table table-hover">
       <thead>
         <slot name="table-header">
@@ -39,7 +39,7 @@
       :amountRows="users.length"
       :rowsOnPage="rowsOnPage"
       :currentPage="currentPage"
-      @page-choiced="pageChoiced"
+      @page-choiced="setCurrentPage"
     ></tag-pagination>
     <!--@page-choiced ="currentPage = $event"-->
   </div>
@@ -92,11 +92,11 @@ export default {
     checkChildMethod() {
       alert('checkChildMethod works!')
     },
-    amountChoiced(amountRows) {
+    setRowsOnPage(amountRows) {
       this.rowsOnPage = Number(amountRows)
       this.currentPage = 1
     },
-    pageChoiced(pageNumber) {
+    setCurrentPage(pageNumber) {
       this.currentPage = pageNumber
     }
   }

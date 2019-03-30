@@ -1,9 +1,9 @@
 <template>
   <div>
     <tag-user-low :userTop="user" :isCardReady="isCardReady" @update-user-top="updateUser">
-      <template slot="my-slot-name">
+      <template slot="button-avatar">
         <div>
-          <button v-show="!isNew" type="button" class="btn btn-secondary" @click="addAvatar">
+          <button v-show="!isNew" type="button" class="btn btn-secondary" @click="setAvatar">
             {{ hasAvatar ? 'change' : ' add' }}
           </button>
         </div>
@@ -118,7 +118,7 @@ export default {
         .then(() => this.$router.push({ path: '/users' }))
         .catch(err => alert(err.message))
     },
-    addAvatar() {
+    setAvatar() {
       // по кнопке вызываем клик на диалоге запроса файла
       this.$refs.sadDialog.click()
     },

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <input :ref="idRef" type="text" class="form-control" :value="date" />
+    <input :ref="idRef" type="text" :value="date" />
+    <button type="button" @click="clickDatepicker">календарь</button>
   </div>
 </template>
 
@@ -39,6 +40,7 @@ export default {
     initCalendar() {
       this.fp = flatpickr(this.$refs[this.idRef], {
         dateFormat: 'd.m.Y',
+        clickOpens: false,
         onChange: (selectedDates, dateStr) => {
           this.$emit('changePicker', dateStr)
         }
@@ -53,9 +55,10 @@ export default {
       if (this.fp) {
         this.fp.destroy()
       }
+    },
+    clickDatepicker() {
+      this.fp.open()
     }
   }
 }
 </script>
-
-<style scoped></style>

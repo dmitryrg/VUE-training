@@ -3,11 +3,11 @@
     <div class="form-group">
       <label>Имя</label>
       <input
-        v-validate="'required'"
-        :value="userLow.firstName"
+        v-validate="'required|alpha|min:2'"
         type="text"
-        :class="{ 'is-invalid': errors.has('firstName'), 'form-control': true }"
+        :value="userLow.firstName"
         name="firstName"
+        :class="{ 'is-invalid': errors.has('firstName'), 'form-control': true }"
         @input="userLow.firstName = $event.target.value"
       />
       <span v-show="errors.has('firstName')" class="invalid-feedback">{{
@@ -16,13 +16,22 @@
     </div>
     <div class="form-group">
       <label>Фамилия</label>
-      <input v-model="userLow.lastName" type="text" class="form-control" />
+      <input
+        v-model="userLow.lastName"
+        v-validate="'required|alpha|min:2'"
+        type="text"
+        name="lastName"
+        :class="{ 'is-invalid': errors.has('lastName'), 'form-control': true }"
+      />
+      <span v-show="errors.has('lastName')" class="invalid-feedback">{{
+        errors.first('lastName')
+      }}</span>
     </div>
     <div class="form-group">
       <label>Аватар</label>
       <div class="contain-float">
         <img :src="makeUrlImage(userLow.avatar)" />
-        <slot name="my-slot-name"></slot>
+        <slot name="button-avatar"></slot>
       </div>
     </div>
     <div class="form-group">
@@ -31,11 +40,27 @@
     </div>
     <div class="form-group">
       <label>Баланс</label>
-      <input v-model="userLow.balance" type="text" class="form-control" />
+      <input
+        v-model="userLow.balance"
+        v-validate="'required|decimal:2'"
+        type="text"
+        name="balance"
+        :class="{ 'is-invalid': errors.has('balance'), 'form-control': true }"
+      />
+      <span v-show="errors.has('balance')" class="invalid-feedback">{{
+        errors.first('balance')
+      }}</span>
     </div>
     <div class="form-group">
       <label>Возраст</label>
-      <input v-model="userLow.age" type="text" class="form-control" />
+      <input
+        v-model="userLow.age"
+        v-validate="'numeric|max_value:120'"
+        type="text"
+        name="age"
+        :class="{ 'is-invalid': errors.has('age'), 'form-control': true }"
+      />
+      <span v-show="errors.has('age')" class="invalid-feedback">{{ errors.first('age') }}</span>
     </div>
     <div class="form-group">
       <label>Компания</label>
@@ -43,11 +68,29 @@
     </div>
     <div class="form-group">
       <label>Эл. почта</label>
-      <input v-model="userLow.email" type="text" class="form-control" />
+      <input
+        v-model="userLow.email"
+        v-validate="'email'"
+        type="text"
+        name="email"
+        :class="{ 'is-invalid': errors.has('email'), 'form-control': true }"
+      />
+      <span v-show="errors.has('email')" class="invalid-feedback">{{ errors.first('email') }}</span>
     </div>
     <div class="form-group">
       <label>Телефон</label>
-      <input v-model="userLow.phone" type="text" class="form-control" />
+
+      <input
+        v-model="userLow.phone"
+        v-validate="{
+          required: true,
+          regex: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
+        }"
+        type="text"
+        name="phone"
+        :class="{ 'is-invalid': errors.has('phone'), 'form-control': true }"
+      />
+      <span v-show="errors.has('phone')" class="invalid-feedback">{{ errors.first('phone') }}</span>
     </div>
     <div class="form-group">
       <label>Адрес</label>
@@ -58,18 +101,37 @@
       <input v-model="userLow.about" type="text" class="form-control" />
     </div>
     <div class="form-group">
-      <label>Интересы</label>
-      <input v-model="userLow.about" type="text" class="form-control" />
-    </div>
-    <div class="form-group">
       <label>Дата рождения</label>
       <!--<input v-model="userLow.registered" type="text" class="form-control" />-->
-      <datepicker v-model="userLow.birthday" :idRef="'dateBirthday'"></datepicker>
+      <datepicker
+        ref="Date birthday"
+        v-model="userLow.birthday"
+        v-validate="'date_format:dd.MM.yyyy|before:Date registered'"
+        :idRef="'dateBirthday'"
+        type="text"
+        name="birthday"
+        :class="{ 'is-invalid': errors.has('birthday'), 'form-control': true }"
+      >
+      </datepicker>
+      <span v-show="errors.has('birthday')" class="invalid-feedback">{{
+        errors.first('birthday')
+      }}</span>
     </div>
     <div class="form-group">
       <label>Дата регистрации</label>
       <!--<input v-model="userLow.registered" type="text" class="form-control" />-->
-      <datepicker v-model="userLow.registered" :idRef="'dateRegistered'"></datepicker>
+      <datepicker
+        ref="Date registered"
+        v-model="userLow.registered"
+        v-validate="'date_format:dd.MM.yyyy|after:Date birthday'"
+        :idRef="'dateRegistered'"
+        type="text"
+        name="registered"
+        :class="{ 'is-invalid': errors.has('registered'), 'form-control': true }"
+      ></datepicker>
+      <span v-show="errors.has('registered')" class="invalid-feedback">{{
+        errors.first('registered')
+      }}</span>
     </div>
   </div>
 </template>
