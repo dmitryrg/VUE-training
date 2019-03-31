@@ -13,6 +13,7 @@ export default Object.assign(
   // постоянная часть
   {
     defaultImage: '/avatars/default.png',
+    cssImagesDir: '/avatars',
     pictureDir: '/avatars',
     possibleAmountOnPage: [10, 20, 50, 100]
   }

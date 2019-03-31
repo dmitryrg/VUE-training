@@ -1,5 +1,5 @@
 <template>
-  <select :class="classUsed" @change="$emit('choice-done', $event.target.value)">
+  <select :style="backgroundImageArrow" @change="$emit('choice-done', $event.target.value)">
     <option v-for="item of list" :key="item" :value="item">
       {{ item }}
     </option>
@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import config from '@/config.js'
 export default {
   name: 'Combobox',
   props: {
@@ -15,12 +16,12 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    urlArrow: 'http://localhost:8080/avatars/selectMarker.jpeg'
-  }),
   computed: {
-    classUsed() {
-      return process.env.NODE_ENV
+    backgroundImageArrow() {
+      return `background-image: url(
+      ${config.serverStatic}
+      ${config.cssImagesDir}
+      /selectMarker.jpeg);`
     }
   }
 }
@@ -36,11 +37,5 @@ select {
   font-size: 16px;
   border: 1px solid #ccc;
   padding: 0 10px;
-}
-.development {
-  background-image: url('http://localhost:8080/avatars/selectMarker.jpeg'); /* add custom arrow */
-}
-.production {
-  background-image: url('https://api.limestudio.ru/avatars/selectMarker.jpeg'); /* add custom arrow */
 }
 </style>
