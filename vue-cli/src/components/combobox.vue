@@ -18,10 +18,9 @@ export default {
   },
   computed: {
     backgroundImageArrow() {
-      return `background-image: url(
-      ${config.serverStatic}
-      ${config.cssImagesDir}
-      /selectMarker.jpeg);`
+      return `background-image: url(${config.serverStatic}${
+        config.cssImagesDir
+      }/selectMarker.jpeg);`
     }
   }
 }

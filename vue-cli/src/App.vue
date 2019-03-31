@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <a class="navbar-brand" href="#">Fixed navbar</a>
+      <router-link class="navbar-brand" to="/">
+        {{ title }}
+      </router-link>
+
       <button
         class="navbar-toggler"
         type="button"
@@ -37,6 +40,18 @@
     </main>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'App',
+  computed: {
+    title() {
+      // return 'aaa'
+      return this.$store.state.navbarTitle
+    }
+  }
+}
+</script>
 
 <style>
 #app {

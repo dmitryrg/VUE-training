@@ -1,10 +1,18 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div>
-    <div v-show="isVisible">
+    <div>
       <h4>
         <!--Количество пользователей {{amountUsersMethods()}}-->
-        Количество пользователей {{ amountPhones }}
+        Количество актуальных телефонов {{ amountPhones }}
       </h4>
+      <h6>
+        <label> Имя группы: </label>
+        <input
+          type="text"
+          :value="$store.state.nameGroup"
+          @input="$store.commit('setNameGroup', $event.target.value)"
+        />
+      </h6>
       <tag-users-low :users="phones">
         <template slot="table-header">
           <tr>
@@ -28,8 +36,8 @@
             <span> {{ user.phone }}</span>
           </td>
         </template>
-        <template slot="button-area" slot-scope="{ checkChildMethodTop }">
-          <!--<template v-slot:button-area="{ checkChildMethodTop }"> // не работает после изменения версии вью-->
+        <!--        <template slot="button-area" slot-scope="{ checkChildMethodTop }">-->
+        <template v-slot:button-area="{ checkChildMethodTop }">
           <button type="button" @click="checkChildMethodTop">checkChildMethod</button>
         </template>
       </tag-users-low>
@@ -39,38 +47,23 @@
 
 <script>
 import UsersLow from '@/components/UsersLow.vue'
-import config from '@/config.js'
-
-import axios from 'axios'
 
 export default {
   name: 'Phones',
   components: {
     'tag-users-low': UsersLow
   },
-  data: function() {
-    return {
-      phones: [],
-      isVisible: true,
-      tooltip: 'всплывающая подсказка'
-    }
-  },
   computed: {
+    // тут стрелки нельзя, поскольку дыс есть
     amountPhones() {
-      return this.phones ? this.phones.length : 0
+      return this.$store.getters.activePhones.length
+    },
+    phones() {
+      return this.$store.getters.activePhones
     }
   },
   mounted() {
-    this.loadPhones()
-  },
-  methods: {
-    async loadPhones() {
-      try {
-        this.phones = (await axios.get(config.serverApi + '/users')).data
-      } catch (err) {
-        alert(err.message)
-      }
-    }
+    this.$store.dispatch('loadPhones')
   }
 }
 </script>
@@ -81,5 +74,8 @@ button {
 }
 img {
   width: 50px;
+}
+label {
+  margin: 10px;
 }
 </style>
