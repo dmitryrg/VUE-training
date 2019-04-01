@@ -1,12 +1,15 @@
 <template>
   <div>
     <span
-      v-for="page in Math.ceil(amountRows / rowsOnPage)"
-      :key="page"
-      :class="{ 'active-page': page === currentPage, 'common-page': true }"
-      @click="$emit('page-choiced', page)"
+      v-for="numberPage in Math.ceil(amountRowsAll / amountRowsPerPage)"
+      :key="numberPage"
+      :class="{
+        'active-number-page': numberPage === numberCurrentPage,
+        'common-number-page': true
+      }"
+      @click="$emit('page-choiced', numberPage)"
     >
-      {{ page }}
+      {{ numberPage }}
     </span>
   </div>
 </template>
@@ -15,15 +18,15 @@
 export default {
   name: 'Pagination',
   props: {
-    amountRows: {
+    amountRowsAll: {
       type: Number,
       required: true
     },
-    rowsOnPage: {
+    amountRowsPerPage: {
       type: Number,
       required: true
     },
-    currentPage: {
+    numberCurrentPage: {
       type: Number,
       required: true
     }
@@ -32,16 +35,16 @@ export default {
 </script>
 
 <style scoped>
-.common-page {
+.common-number-page {
   margin: 30px 10px;
   padding: 5px 30px;
   background: #d7f0f3;
 }
-.common-page:hover {
+.common-number-page:hover {
   background: #dcdcdc;
   cursor: pointer;
 }
-.active-page {
+.active-number-page {
   background: #ffd6d6;
 }
 </style>

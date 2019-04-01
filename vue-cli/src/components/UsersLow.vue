@@ -36,12 +36,12 @@
       </tbody>
     </table>
     <tag-pagination
-      :amountRows="users.length"
-      :rowsOnPage="rowsOnPage"
-      :currentPage="currentPage"
+      :amountRowsAll="users.length"
+      :amountRowsPerPage="amountRowsPerPage"
+      :numberCurrentPage="numberCurrentPage"
       @page-choiced="setCurrentPage"
     ></tag-pagination>
-    <!--@page-choiced ="currentPage = $event"-->
+    <!--@page-choiced ="numberCurrentPage = $event"-->
   </div>
 </template>
 
@@ -66,8 +66,8 @@ export default {
   data: () => {
     return {
       possibleAmounts: config.possibleAmountOnPage,
-      rowsOnPage: config.possibleAmountOnPage[0],
-      currentPage: 1
+      amountRowsPerPage: config.possibleAmountOnPage[0],
+      numberCurrentPage: 1
     }
   },
   computed: {
@@ -78,8 +78,8 @@ export default {
       if (this.isListReady) {
         return this.users.filter(
           (elem, index) =>
-            index < this.currentPage * this.rowsOnPage &&
-            index >= (this.currentPage - 1) * this.rowsOnPage
+            index < this.numberCurrentPage * this.amountRowsPerPage &&
+            index >= (this.numberCurrentPage - 1) * this.amountRowsPerPage
         )
       } else {
         return []
@@ -93,11 +93,11 @@ export default {
       alert('checkChildMethod works!')
     },
     setRowsOnPage(amountRows) {
-      this.rowsOnPage = Number(amountRows)
-      this.currentPage = 1
+      this.amountRowsPerPage = Number(amountRows)
+      this.numberCurrentPage = 1
     },
     setCurrentPage(pageNumber) {
-      this.currentPage = pageNumber
+      this.numberCurrentPage = pageNumber
     }
   }
 }
