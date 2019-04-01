@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tag-combobox :list="possibleAmounts" @choice-done="setRowsOnPage"> </tag-combobox>
+    <tag-combobox v-model="selectRowsPerPage"> </tag-combobox>
     <table v-show="isListReady" class="table table-hover">
       <thead>
         <slot name="table-header">
@@ -35,12 +35,7 @@
         </router-link>
       </tbody>
     </table>
-    <tag-pagination
-      :amountRowsAll="users.length"
-      :amountRowsPerPage="amountRowsPerPage"
-      :numberCurrentPage="numberCurrentPage"
-      @page-choiced="setCurrentPage"
-    ></tag-pagination>
+    <tag-pagination v-model="selectPage"></tag-pagination>
     <!--@page-choiced ="numberCurrentPage = $event"-->
   </div>
 </template>
@@ -84,6 +79,27 @@ export default {
       } else {
         return []
       }
+    },
+    selectRowsPerPage: {
+      get() {
+        return this.possibleAmounts
+      },
+      set(amountRows) {
+        this.amountRowsPerPage = Number(amountRows)
+        this.numberCurrentPage = 1
+      }
+    },
+    selectPage: {
+      get() {
+        return {
+          amountRowsAll: this.users.length,
+          amountRowsPerPage: this.amountRowsPerPage,
+          numberCurrentPage: this.numberCurrentPage
+        }
+      },
+      set(pageNumber) {
+        this.numberCurrentPage = pageNumber
+      }
     }
   },
   methods: {
@@ -91,13 +107,6 @@ export default {
     makePathUser,
     checkChildMethod() {
       alert('checkChildMethod works!')
-    },
-    setRowsOnPage(amountRows) {
-      this.amountRowsPerPage = Number(amountRows)
-      this.numberCurrentPage = 1
-    },
-    setCurrentPage(pageNumber) {
-      this.numberCurrentPage = pageNumber
     }
   }
 }

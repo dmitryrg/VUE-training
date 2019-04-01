@@ -21,7 +21,7 @@
     </tag-user-low>
 
     <button type="button" class="btn btn-primary" @click="goBack">Back</button>
-    <button type="button" class="btn btn-success" @click="saveUser">Save</button>
+    <button type="button" class="btn btn-success" @click="saveUser(true)">Save</button>
     <button v-show="!isNew" type="button" class="btn btn-danger" @click="delUser">Del</button>
 
     <input v-show="false" ref="sadDialog" type="file" @change="fileChoiced" />
@@ -87,7 +87,7 @@ export default {
         .then(user => (this.user = user))
         .catch(err => alert(err.message))
     },
-    saveUser() {
+    saveUser(goBackToList) {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) {
           alert('не заполнено одно из полей')
@@ -97,8 +97,9 @@ export default {
           axios
             .post(config.serverApi + '/users', this.user)
             .then(() => {
-              // если запущена по клику, то прилетит событие
-              if (event) this.$router.push({ path: '/users' })
+              if (goBackToList) {
+                setTimeout(() => this.$router.push({ path: '/users' }), 200)
+              }
             })
             .catch(err => alert(err.message))
         } else {
@@ -106,7 +107,9 @@ export default {
           axios
             .put(config.serverApi + '/users/' + this.idUser, this.user)
             .then(() => {
-              if (event) this.$router.push({ path: '/users' })
+              if (goBackToList) {
+                setTimeout(() => this.$router.push({ path: '/users' }), 200) // 180 иногда глючила
+              }
             })
             .catch(err => alert(err.message))
         }
@@ -129,25 +132,24 @@ export default {
     delAvatarApi(filenameAvatar) {
       axios
         .delete(config.serverApi + '/picture' + filenameAvatar)
-        .then(() => this.saveUser())
+        .then(() => this.saveUser(false))
         .catch(err => alert(err.message))
     },
     fileChoiced() {
       // после завершения диалога у нас файл выбран
       // this.$refs.sadDialog.files[0]
       // this.$refs.sadDialog.value - имя файл
-      // const fileSend = new FormData()
-      // fileSend.append('image', this.$refs.sadDialog.files[0])
 
       const fileNameChoiced = this.$refs.sadDialog.value
       const extname = fileNameChoiced.substring(fileNameChoiced.lastIndexOf('.') + 1)
       const fileNameCreating = `${config.pictureDir}/${this.idUser}-${Date.now()}.${extname}`
-      console.log('fileNameCreating ->', fileNameCreating) // debug
       axios
         .post(config.serverApi + '/picture' + fileNameCreating, this.$refs.sadDialog.files[0])
         .then(response => {
           let prevAvatar = null
-          if (this.hasAvatar) prevAvatar = this.user['avatar']
+          if (this.hasAvatar) {
+            prevAvatar = this.user['avatar']
+          }
           // в юзере путь в аватаре хранится без точки
           this.user['avatar'] = response.data.link
           this.$refs.sadDialog.value = ''
@@ -155,7 +157,7 @@ export default {
           if (prevAvatar) {
             this.delAvatarApi(prevAvatar)
           } else {
-            this.saveUser()
+            this.saveUser(false)
           }
         })
         .catch(err => alert(err.message))

@@ -1,4 +1,4 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<template>
   <div>
     <div>
       <h4>
@@ -7,11 +7,9 @@
       </h4>
       <h6>
         <label> Имя группы: </label>
-        <input
-          type="text"
-          :value="$store.state.nameGroup"
-          @input="$store.commit('setNameGroup', $event.target.value)"
-        />
+        <input v-model="nameGroup" type="text" />
+        <!--        :value="$store.state.nameGroup"
+        @input="$store.commit('setNameGroup', $event.target.value)"-->
       </h6>
       <tag-users-low :users="phones">
         <template slot="table-header">
@@ -36,8 +34,8 @@
             <span> {{ user.phone }}</span>
           </td>
         </template>
-        <!--        <template slot="button-area" slot-scope="{ checkChildMethodTop }">-->
-        <template v-slot:button-area="{ checkChildMethodTop }">
+        <template slot="button-area" slot-scope="{ checkChildMethodTop }">
+          <!--        <template v-slot:button-area="{ checkChildMethodTop }">-->
           <button type="button" @click="checkChildMethodTop">checkChildMethod</button>
         </template>
       </tag-users-low>
@@ -56,10 +54,18 @@ export default {
   computed: {
     // тут стрелки нельзя, поскольку дыс есть
     amountPhones() {
-      return this.$store.getters.activePhones.length
+      return this.phones.length
     },
     phones() {
       return this.$store.getters.activePhones
+    },
+    nameGroup: {
+      get() {
+        return this.$store.state.nameGroup
+      },
+      set(value) {
+        this.$store.commit('setNameGroup', value)
+      }
     }
   },
   mounted() {

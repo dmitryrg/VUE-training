@@ -12,7 +12,7 @@ export default {
   name: 'Datepicker',
   model: {
     prop: 'date',
-    event: 'changePicker'
+    event: 'change-picker'
   },
   props: {
     date: {
@@ -42,7 +42,7 @@ export default {
         dateFormat: 'd.m.Y',
         clickOpens: false,
         onChange: (selectedDates, dateStr) => {
-          this.$emit('changePicker', dateStr)
+          this.$emit('change-picker', dateStr)
         }
       })
     },

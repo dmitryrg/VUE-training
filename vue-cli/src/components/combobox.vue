@@ -10,6 +10,10 @@
 import config from '@/config.js'
 export default {
   name: 'Combobox',
+  model: {
+    prop: 'list',
+    event: 'choice-done'
+  },
   props: {
     list: {
       type: Array,
