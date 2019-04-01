@@ -5,9 +5,11 @@ describe('Pagination.vue', () => {
   it('Check is Pagination instance of Vue', () => {
     const wrapper = shallowMount(Pagination, {
       propsData: {
-        amountRowsAll: 103,
-        amountRowsPerPage: 10,
-        numberCurrentPage: 1
+        passParams: {
+          amountRowsAll: 103,
+          amountRowsPerPage: 10,
+          numberCurrentPage: 1
+        }
       }
     })
     expect(wrapper.isVueInstance()).toEqual(true)
@@ -16,25 +18,33 @@ describe('Pagination.vue', () => {
   it('Check input parameters of Pagination', () => {
     const wrapper = shallowMount(Pagination, {
       propsData: {
-        amountRowsAll: 103,
-        amountRowsPerPage: 10,
-        numberCurrentPage: 1
+        passParams: {
+          amountRowsAll: 103,
+          amountRowsPerPage: 10,
+          numberCurrentPage: 1
+        }
       }
     })
-    expect(wrapper.vm.numberCurrentPage).toBeDefined()
+    expect(wrapper.vm.passParams.numberCurrentPage).toBeDefined()
 
     wrapper.setProps({
-      numberCurrentPage: 7
+      passParams: {
+        amountRowsAll: 103,
+        amountRowsPerPage: 10,
+        numberCurrentPage: 7
+      }
     })
-    expect(wrapper.vm.numberCurrentPage).toEqual(7)
+    expect(wrapper.vm.passParams.numberCurrentPage).toEqual(7)
   })
 
   it('Check spans with class common-number-page and active-number-page are exists of Pagination', () => {
     const wrapper = shallowMount(Pagination, {
       propsData: {
-        amountRowsAll: 103,
-        amountRowsPerPage: 10,
-        numberCurrentPage: 7
+        passParams: {
+          amountRowsAll: 103,
+          amountRowsPerPage: 10,
+          numberCurrentPage: 1
+        }
       }
     })
 
@@ -45,9 +55,11 @@ describe('Pagination.vue', () => {
   it('Check event of Pagination', () => {
     const wrapper = shallowMount(Pagination, {
       propsData: {
-        amountRowsAll: 103,
-        amountRowsPerPage: 10,
-        numberCurrentPage: 7
+        passParams: {
+          amountRowsAll: 103,
+          amountRowsPerPage: 10,
+          numberCurrentPage: 1
+        }
       }
     })
     expect(wrapper.findAll('span.common-number-page').length).toEqual(11)
