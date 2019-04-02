@@ -98,7 +98,7 @@ export default {
             .post(config.serverApi + '/users', this.user)
             .then(() => {
               if (goBackToList) {
-                setTimeout(() => this.$router.push({ path: '/users' }), 300)
+                this.$router.push({ path: '/users' })
               }
             })
             .catch(err => alert(err.message))
@@ -108,7 +108,7 @@ export default {
             .put(config.serverApi + '/users/' + this.idUser, this.user)
             .then(() => {
               if (goBackToList) {
-                setTimeout(() => this.$router.push({ path: '/users' }), 300) // 180 иногда глючила
+                this.$router.push({ path: '/users' }) // 180 иногда глючила
               }
             })
             .catch(err => alert(err.message))
@@ -118,7 +118,7 @@ export default {
     delUser() {
       axios
         .delete(config.serverApi + '/users/' + this.idUser)
-        .then(() => setTimeout(() => this.$router.push({ path: '/users' }), 300))
+        .then(() => this.$router.push({ path: '/users' }))
         .catch(err => alert(err.message))
     },
     setAvatar() {

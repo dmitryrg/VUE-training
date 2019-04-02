@@ -11,11 +11,9 @@ const PORT = 3001
 
 http
   .createServer(function(request, response) {
-    console.log('request url', request.url)
-
-    console.log('request method', request.method)
-
-    console.log('request.headers ->', request.headers) // debug
+    console.log('request url', request.url) // debug
+    console.log('request method', request.method) // debug
+    // console.log('request.headers ->', request.headers) // debug
 
     if (request.url.substr(0, PREFIX_API_PATH.length) === PREFIX_API_PATH) {
       //  API-шная часть
@@ -86,7 +84,7 @@ http
                     errorEnd(404, 'Section Users in db is empty')
                     return
                   }
-                  console.log('content ->', contentSection) // debug
+                  // console.log('content ->', contentSection) // debug
                   successEnd(200, JSON.stringify(contentSection))
                 } else {
                   // запрос на определенного юзверя
@@ -98,7 +96,7 @@ http
                     errorEnd(404, `User with id ${paramApi} does not present in db`)
                     return
                   }
-                  console.log('contentSection[indexRecord] ->', contentSection[indexRecord]) // debug
+                  // console.log('contentSection[indexRecord] ->', contentSection[indexRecord]) // debug
                   successEnd(200, JSON.stringify(contentSection[indexRecord]))
                 }
                 break
@@ -137,7 +135,7 @@ http
                       requestBodyObj = ''
                     }
                     console.log('requestBodyStr ->', requestBodyStr) // debug
-                    console.log('typeof requestBodyObj ->', typeof requestBodyObj) // debug
+                    // console.log('typeof requestBodyObj ->', typeof requestBodyObj) // debug
 
                     if (requestBodyObj === null || typeof requestBodyObj !== 'object') {
                       errorEnd(400, 'Request body has wrong format')
@@ -261,7 +259,7 @@ http
                       proccessedRecord[key] = requestBodyObj[key]
                     }
 
-                    console.log('contentSection PUT ->', contentSection) // debug
+                    // console.log('contentSection PUT ->', contentSection) // debug
 
                     fs.writeFile('.' + PART_DATABASE_JSON, JSON.stringify(contentDb), error => {
                       if (error) {
@@ -304,7 +302,7 @@ http
                 // удаляем соответствующую запись из базы данных
                 contentSection.splice(indexRecord, 1)
 
-                console.log('content Section DELETE ->', contentSection) // debug
+                // console.log('content Section DELETE ->', contentSection) // debug
 
                 fs.writeFile('.' + PART_DATABASE_JSON, JSON.stringify(contentDb), error => {
                   if (error) {
@@ -324,7 +322,7 @@ http
                 }
                 // ставим точку перед обращением к файлу
                 fileName = `.${PUBLIC_DIR}/${paramApi}`
-                console.log('del ava fileName ->', fileName) // debug
+                // console.log('del ava fileName ->', fileName) // debug
                 fs.unlink(fileName, () => {
                   /*nowhere to send report*/
                 })
@@ -391,7 +389,7 @@ http
 
     function successEnd(code, body, type) {
       console.log('successEnd code ->', code) // debug
-      console.log('successEnd body ->', body) // debug
+      // console.log('successEnd body ->', body) // debug
       response.writeHead(code, {
         'Access-Control-Allow-Credentials': true,
         'Content-Type': type || 'application/json',

@@ -8,6 +8,7 @@
 
 <script>
 import config from '@/config.js'
+console.log('__dirname ->', __dirname) // debug
 export default {
   name: 'Combobox',
   model: {
