@@ -1,11 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/views/Home.vue'
-import About from '@/views/About.vue'
-import UsersTop from '@/views/UsersTop.vue'
-import UserTop from '@/views/UserTop.vue'
-import Phones from '@/views/Phones.vue'
+const UserTop = () => import('@/views/UserTop.vue')
 
 Vue.use(Router)
 
@@ -16,22 +12,22 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: () => import('@/views/Home.vue')
     },
     {
       path: '/about',
       name: 'about',
-      component: About
+      component: () => import('@/views/About.vue')
     },
     {
       path: '/users',
       name: 'users',
-      component: UsersTop
+      component: () => import('@/views/UsersTop.vue')
     },
     {
       path: '/phones',
       name: 'phones',
-      component: Phones
+      component: () => import('@/views/Phones.vue')
     },
     {
       path: '/users/:idPath',

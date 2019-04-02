@@ -1,4 +1,4 @@
-;[
+/*[
   {
     'repeat(100)': {
       id: '{{index()}}',
@@ -23,4 +23,4 @@
       registered: '{{moment(this.date(new Date(2014, 0, 1), new Date())).format("DD.MM.YYYY")}}'
     }
   }
-]
+]*/

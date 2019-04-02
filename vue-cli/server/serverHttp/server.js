@@ -2,12 +2,13 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 
-const PART_DATABASE_JSON = '/db/users.json'
-const PREFIX_API_PATH = ''
-const PUBLIC_DIR = '/public'
-// const PICTURE_DIR = '/avatars'
+const isDev = process.argv[2] === 'development'
 
-const PORT = 3001
+// конфиг решил не выносить для тестового варианта
+const PART_DATABASE_JSON = isDev ? '/server/db/users.json' : './db/users.json'
+const PREFIX_API_PATH = isDev ? '' : '/apiservervue'
+const PUBLIC_DIR = isDev ? '/public' : '/vuestatic'
+const PORT = isDev ? 3001 : 1344
 
 http
   .createServer(function(request, response) {
