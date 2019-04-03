@@ -1,13 +1,13 @@
 <template>
   <div>
     <span
-      v-for="numberPage in Math.ceil(passParams.amountRowsAll / passParams.amountRowsPerPage)"
+      v-for="numberPage in Math.ceil(amountRowsAll / amountRowsPerPage)"
       :key="numberPage"
       :class="{
-        'active-number-page': numberPage === passParams.numberCurrentPage,
+        'active-number-page': numberPage === numberCurrentPage,
         'common-number-page': true
       }"
-      @click="$emit('page-choiced', numberPage)"
+      @click="$emit('number-page-choiced', numberPage)"
     >
       {{ numberPage }}
     </span>
@@ -18,18 +18,24 @@
 export default {
   name: 'Pagination',
   model: {
-    prop: 'passParams',
-    event: 'page-choiced'
+    prop: 'numberCurrentPage',
+    event: 'number-page-choiced'
   },
   props: {
-    passParams: {
-      type: Object,
+    numberCurrentPage: {
+      type: Number,
       require: true,
-      default: () => ({
-        amountRowsAll: 0,
-        amountRowsPerPage: 0,
-        numberCurrentPage: 0
-      })
+      default: null
+    },
+    amountRowsAll: {
+      type: Number,
+      require: true,
+      default: null
+    },
+    amountRowsPerPage: {
+      type: Number,
+      require: true,
+      default: null
     }
   }
 }

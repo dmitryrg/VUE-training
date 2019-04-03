@@ -86,7 +86,6 @@ export default {
       },
       set(amountRows) {
         this.amountRowsPerPage = Number(amountRows)
-        this.numberCurrentPage = 1
       }
     },
     selectPage: {
@@ -102,11 +101,17 @@ export default {
       }
     }
   },
+  watch: {
+    amountRowsPerPage: 'resetNumberCurrentPage'
+  },
   methods: {
     makeUrlImage,
     makePathUser,
     checkChildMethod() {
       alert('checkChildMethod works!')
+    },
+    resetNumberCurrentPage() {
+      this.numberCurrentPage = 1
     }
   }
 }

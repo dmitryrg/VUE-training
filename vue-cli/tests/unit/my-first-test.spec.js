@@ -26,6 +26,7 @@ describe('Pagination.vue', () => {
       }
     })
     expect(wrapper.vm.passParams.numberCurrentPage).toBeDefined()
+    expect(wrapper.vm.passParams.numberCurrentPage).toEqual(1)
 
     wrapper.setProps({
       passParams: {
