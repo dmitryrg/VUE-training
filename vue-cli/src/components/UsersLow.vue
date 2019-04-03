@@ -35,7 +35,11 @@
         </router-link>
       </tbody>
     </table>
-    <tag-pagination v-model="selectPage"></tag-pagination>
+    <tag-pagination
+      v-model="selectPage"
+      :amountRowsAll="users.length"
+      :amountRowsPerPage="amountRowsPerPage"
+    ></tag-pagination>
     <!--@page-choiced ="numberCurrentPage = $event"-->
   </div>
 </template>
@@ -90,11 +94,7 @@ export default {
     },
     selectPage: {
       get() {
-        return {
-          amountRowsAll: this.users.length,
-          amountRowsPerPage: this.amountRowsPerPage,
-          numberCurrentPage: this.numberCurrentPage
-        }
+        return this.numberCurrentPage
       },
       set(pageNumber) {
         this.numberCurrentPage = pageNumber

@@ -28,12 +28,7 @@ module.exports = {
       {
         ignore: []
       }
-    ]/*,
-    'vue/require-default-prop': ['error', {
-      'required': false,
-      'non-required': false,
-      }
-    ],*/
+    ]
   },
   parserOptions: {
     parser: 'babel-eslint'
