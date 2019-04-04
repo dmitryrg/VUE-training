@@ -1,20 +1,30 @@
+// pm2 start /var/www/admin/www/vueTraining/server/serverHttp/server.js --name vueapiserver
+// pm2 delete vueapiserver
+
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
+const pug = require('pug')
+const reqApi = require('request')
 
 const isDev = process.argv[2] === 'development'
 
 // конфиг решил не выносить для тестового варианта
 const PART_DATABASE_JSON = isDev ? '/server/db/users.json' : './db/users.json'
-const PREFIX_API_PATH = isDev ? '' : '/apiservervue'
-const PUBLIC_DIR = isDev ? '/public' : '/vuestatic'
+const PREFIX_API_PATH = isDev ? '/api' : '/apiservervue/api'
+const PREFIX_TO_DEL = isDev ? null : '/apiservervue'
+const PUBLIC_DIR = '/pug'
 const PORT = isDev ? 3001 : 1344
+const SERVER_API = isDev ? 'http://localhost:3001' : 'https://api.limestudio.ru'
+const SERVER_STATIC = isDev ? 'http://localhost:8080' : 'http://vue.limestudio.ru'
+const DEFAULT_IMAGE = '/avatars/default.png'
 
 http
   .createServer(function(request, response) {
     console.log('request url', request.url) // debug
     console.log('request method', request.method) // debug
     // console.log('request.headers ->', request.headers) // debug
+    let requestBodyBuf = null
 
     if (request.url.substr(0, PREFIX_API_PATH.length) === PREFIX_API_PATH) {
       //  API-шная часть
@@ -55,7 +65,6 @@ http
         const paramApi = dividerPosition === -1 ? '' : request.url.slice(dividerPosition + 1)
         // переменные вынесены за пределы switch по требованию линта
         let indexRecord = null
-        let requestBodyBuf = null
         let contentSection = null
         let streamWriteFile = null
         let fileName = null
@@ -340,8 +349,16 @@ http
         }
       })
     } else {
-      // обычный сервер на выдачу файлов
-      const filePath = request.url === '/' ? PUBLIC_DIR + '/index.html' : PUBLIC_DIR + request.url // текущая директория сервера
+      // обычный сервер на выдачу файлов и pug отриндеренных данных
+      let filePath =
+        request.url === '/' // текущая директория сервера
+          ? __dirname + PUBLIC_DIR + '/index.html'
+          : __dirname + PUBLIC_DIR + request.url
+
+      if (PREFIX_TO_DEL) {
+        filePath = filePath.replace(PREFIX_TO_DEL, '')
+      }
+      // console.log('filePath ->', filePath) // debug
 
       const extname = String(path.extname(filePath)).toLowerCase()
 
@@ -364,17 +381,55 @@ http
 
       const contentFileType = mimeTypes[extname] || 'application/octet-stream'
 
-      fs.readFile(filePath, (error, contentFile) => {
-        if (error) {
-          const errSend =
-            error.code === 'ENOENT'
-              ? { code: 404, body: 'File is not found' }
-              : { code: 500, body: 'Server error' }
-          errorEnd(errSend.code, errSend.body)
-        } else {
-          successEnd(200, contentFile, contentFileType)
-        }
-      })
+      if (extname === '.html') {
+        const pugFileName = filePath.slice(0, -extname.length) + '.pug'
+        fs.stat(pugFileName, err => {
+          if (err) {
+            errorEnd(404, err.message)
+            return
+          }
+          requestBodyBuf = []
+          reqApi
+            .get(SERVER_API + PREFIX_API_PATH + '/users')
+            .on('error', err => errorEnd(404, err.message))
+            .on('data', chunk => requestBodyBuf.push(chunk))
+            .on('end', () => {
+              let users = JSON.parse(Buffer.concat(requestBodyBuf).toString())
+              let pugToHtml = null
+              const urls = [
+                SERVER_STATIC + '/',
+                SERVER_STATIC + '/about',
+                SERVER_STATIC + '/users',
+                SERVER_STATIC + '/phones',
+                SERVER_API + '/phones.html'
+              ]
+              try {
+                pugToHtml = pug.renderFile(pugFileName, {
+                  users,
+                  urls,
+                  SERVER_STATIC,
+                  DEFAULT_IMAGE
+                })
+              } catch (err) {
+                errorEnd(500, err.message)
+                return
+              }
+              successEnd(200, pugToHtml, contentFileType)
+            })
+        })
+      } else {
+        fs.readFile(filePath, (error, contentFile) => {
+          if (error) {
+            const errSend =
+              error.code === 'ENOENT'
+                ? { code: 404, body: 'File is not found' }
+                : { code: 500, body: 'Server error' }
+            errorEnd(errSend.code, errSend.body)
+          } else {
+            successEnd(200, contentFile, contentFileType)
+          }
+        })
+      }
     }
 
     function allowNextEnd() {

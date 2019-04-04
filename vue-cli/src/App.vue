@@ -31,23 +31,30 @@
           <router-link to="/phones" tag="li" class="nav-item">
             <a class="nav-link">Phones</a>
           </router-link>
+          <li class="nav-item">
+            <a class="nav-link" :href="urlCeo">CEO</a>
+          </li>
         </ul>
       </div>
     </nav>
 
     <main role="main" class="container">
-      <router-view />
+      <router-view></router-view>
     </main>
   </div>
 </template>
 
 <script>
+import config from '@/config.js'
 export default {
   name: 'App',
   computed: {
     title() {
       // return 'aaa'
       return this.$store.state.navbarTitle
+    },
+    urlCeo() {
+      return config.serverPug + '/phones.html'
     }
   }
 }

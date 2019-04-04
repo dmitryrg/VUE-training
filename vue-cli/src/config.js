@@ -5,11 +5,13 @@ export default Object.assign(
   process.env.NODE_ENV === 'development' // 'production'
     ? {
         serverStatic: 'http://localhost:8080',
-        serverApi: 'http://localhost:3001'
+        serverApi: 'http://localhost:3001/api',
+        serverPug: 'http://localhost:3001'
       }
     : {
         serverStatic: 'http://vue.limestudio.ru',
-        serverApi: 'https://api.limestudio.ru/apiservervue'
+        serverApi: 'https://api.limestudio.ru/apiservervue/api',
+        serverPug: 'https://api.limestudio.ru/apiservervue'
       },
   // постоянная часть
   {

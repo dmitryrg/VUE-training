@@ -1,0 +1,42 @@
+head
+  meta(charset='utf-8')
+  link(rel='stylesheet' href='css/bootstrap.min.css')
+  title Phones
+body
+  nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+    a.navbar-brand(href=urls[0]) Vuex test title
+    #navbarCollapse.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        li.nav-item
+          a.nav-link(href=urls[0]) Home
+        li.nav-item
+          a.nav-link(href=urls[1]) About
+        li.nav-item
+          a.nav-link(href=urls[2]) Users
+        li.nav-item
+          a.nav-link(href=urls[3]) Phones
+        li.nav-item
+          a.nav-link.active(href=urls[4]) CEO
+  br
+  br
+  br
+  table.table.table-hover
+    thead
+      th Имя
+      th Фамилия
+      th Возраст
+      th Телефон
+      th Аватар
+    tbody
+    each user in users
+        tr
+          td= user.firstName
+          td= user.lastName
+          td= user.age
+          td= user.phone
+          td
+            if user.avatar !== ''
+              img(src= SERVER_STATIC + user.avatar style={width: '50px'})
+            else
+              img(src= SERVER_STATIC + DEFAULT_IMAGE)
+
