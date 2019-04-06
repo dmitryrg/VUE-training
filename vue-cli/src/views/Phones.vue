@@ -1,46 +1,31 @@
-<template>
-  <div>
-    <div>
-      <h4>
-        <!--Количество пользователей {{amountUsersMethods()}}-->
-        Количество актуальных телефонов {{ amountPhones }}
-      </h4>
-      <h6>
-        <label> Имя группы: </label>
-        <input v-model="nameGroup" type="text" />
-        <!--        :value="$store.state.nameGroup"
-        @input="$store.commit('setNameGroup', $event.target.value)"-->
-      </h6>
-      <tag-users-low :users="phones">
-        <template slot="table-header">
-          <tr>
-            <th><span> #</span></th>
-            <th><span>Имя</span></th>
-            <th><span>Фамилия</span></th>
-            <th><span>Телефон</span></th>
-          </tr>
-        </template>
-        <template slot="table-row" slot-scope="{ user }">
-          <td>
-            <span> {{ user.id }}</span>
-          </td>
-          <td>
-            <span> {{ user.firstName }}</span>
-          </td>
-          <td>
-            <span> {{ user.lastName }}</span>
-          </td>
-          <td>
-            <span> {{ user.phone }}</span>
-          </td>
-        </template>
-        <template slot="button-area" slot-scope="{ checkChildMethodTop }">
-          <!--        <template v-slot:button-area="{ checkChildMethodTop }">-->
-          <button type="button" @click="checkChildMethodTop">checkChildMethod</button>
-        </template>
-      </tag-users-low>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    h4 Количество телефонов {{ amountPhones }}
+    h6
+      label  Имя группы:
+      input(v-model="nameGroup" type="text")
+    tag-users-low(:users="phones")
+      template(slot="table-header")
+        tr
+          th
+            span  #
+          th
+            span Имя
+          th
+            span Фамилия
+          th
+            span Телефон
+      template(slot="table-row" slot-scope="{ user }")
+        td
+          span  {{ user.id }}
+        td
+          span  {{ user.firstName }}
+        td
+          span  {{ user.lastName }}
+        td
+          span  {{ user.phone }}
+      template(slot="button-area" slot-scope="{ checkChildMethodTop }")
+        button(type="button" @click="checkChildMethodTop") checkChildMethod
 </template>
 
 <script>

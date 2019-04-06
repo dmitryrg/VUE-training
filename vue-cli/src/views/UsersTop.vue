@@ -1,14 +1,9 @@
-<template>
-  <div>
-    <div>
-      <h4>
-        <!--Количество пользователей {{amountUsersMethods()}}-->
-        Количество пользователей {{ amountUsersComputed }}
-      </h4>
-      <tag-users-low :users="users"> </tag-users-low>
-    </div>
-    <button type="button" class="btn btn-success" @click="addUser">Add</button>
-  </div>
+<template lang="pug">
+div
+  div
+    h4 Количество пользователей {{ amountUsersComputed }}
+    tag-users-low(:users="users")
+  button.btn.btn-success(type="button" @click="addUser") Add
 </template>
 
 <script>

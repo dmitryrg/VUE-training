@@ -1,35 +1,17 @@
-<template>
-  <div>
-    <tag-user-low :userTop="user" :isCardReady="isCardReady" @update-user-top="updateUser">
-      <template slot="button-avatar">
-        <div>
-          <button v-show="!isNew" type="button" class="btn btn-secondary" @click="setAvatar">
-            {{ hasAvatar ? 'change' : ' add' }}
-          </button>
-        </div>
-        <div>
-          <button
-            v-show="hasAvatar && !isNew"
-            type="button"
-            class="btn btn-secondary"
-            @click="delAvatarButton"
-          >
-            del
-          </button>
-        </div>
-      </template>
-    </tag-user-low>
-
-    <button type="button" class="btn btn-primary" @click="goBack">Back</button>
-    <button type="button" class="btn btn-success" @click="saveUser(true)">Save</button>
-    <button v-show="!isNew" type="button" class="btn btn-danger" @click="delUser">Del</button>
-
-    <input v-show="false" ref="sadDialog" type="file" @change="fileChoiced" />
-
-    <!--    <pre>
-      {{ user }}
-    </pre>-->
-  </div>
+<template lang="pug">
+  div
+    tag-user-low(:userTop="user" :isCardReady="isCardReady" @update-user-top="updateUser")
+      template(slot="button-avatar")
+        div
+          button.btn.btn-secondary(v-show="!isNew" type="button" @click="setAvatar")
+            | {{ hasAvatar ? "change" : " add" }}
+        div
+          button.btn.btn-secondary(v-show="hasAvatar && !isNew" type="button" @click="delAvatarButton")
+            | del
+    button.btn.btn-primary(type="button" @click="goBack") Back
+    button.btn.btn-success(type="button" @click="saveUser(true)") Save
+    button.btn.btn-danger(v-show="!isNew" type="button" @click="delUser") Del
+    input(v-show="false" ref="sadDialog" type="file" @change="fileChoiced")
 </template>
 
 <script>
