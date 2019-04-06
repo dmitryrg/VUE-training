@@ -1,17 +1,10 @@
-<template>
-  <div>
-    <span
-      v-for="numberPage in Math.ceil(amountRowsAll / amountRowsPerPage)"
-      :key="numberPage"
-      :class="{
-        'active-number-page': numberPage === numberCurrentPage,
-        'common-number-page': true
-      }"
-      @click="$emit('number-page-choiced', numberPage)"
-    >
-      {{ numberPage }}
-    </span>
-  </div>
+<template lang="pug">
+  div
+    span(
+      v-for="numberPage in Math.ceil(amountRowsAll / amountRowsPerPage)" 
+      :key="numberPage" 
+      :class="{'active-number-page': numberPage === numberCurrentPage, 'common-number-page': true}"
+      @click="$emit('number-page-choiced', numberPage)") {{ numberPage }}
 </template>
 
 <script>
