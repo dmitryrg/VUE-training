@@ -1,139 +1,101 @@
-<template>
-  <div v-show="isCardReady">
-    <div class="form-group">
-      <label>Имя</label>
-      <input
-        v-validate="'required|alpha|min:2'"
+<template lang="pug">
+  div(v-show="isCardReady")
+    div.form-group
+      label Имя
+      input(
+        v-validate="'required|alpha|min:2'" 
         type="text"
         :value="userLow.firstName"
         name="firstName"
         :class="{ 'is-invalid': errors.has('firstName'), 'form-control': true }"
         @input="userLow.firstName = $event.target.value"
-      />
-      <span v-show="errors.has('firstName')" class="invalid-feedback">{{
-        errors.first('firstName')
-      }}</span>
-    </div>
-    <div class="form-group">
-      <label>Фамилия</label>
-      <input
+      )
+      span.invalid-feedback(v-show="errors.has('firstName')") {{errors.first('firstName')}}
+    div.form-group
+      label Фамилия
+      input(
         v-model="userLow.lastName"
-        v-validate="'required|alpha|min:2'"
+        v-validate="'required|alpha|min:2'" 
         type="text"
         name="lastName"
-        :class="{ 'is-invalid': errors.has('lastName'), 'form-control': true }"
-      />
-      <span v-show="errors.has('lastName')" class="invalid-feedback">{{
-        errors.first('lastName')
-      }}</span>
-    </div>
-    <div class="form-group">
-      <label>Аватар</label>
-      <div class="contain-float">
-        <img :src="makeUrlImage(userLow.avatar)" />
-        <slot name="button-avatar"></slot>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Статус</label>
-      <input v-model="userLow.isActive" type="checkbox" class="form-control" />
-    </div>
-    <div class="form-group">
-      <label>Баланс</label>
-      <input
+        :class="{ 'is-invalid': errors.has('lastName'), 'form-control': true }")
+      span.invalid-feedback(v-show="errors.has('lastName')") {{errors.first('lastName')}}
+    div.form-group
+      label Аватар
+      .contain-float
+        img(:src="makeUrlImage(userLow.avatar)")
+        slot(name="button-avatar")
+    div.form-group
+      label Статус
+      input.form-control(v-model='userLow.isActive' type='checkbox')
+    div.form-group
+      label Баланс
+      input(
         v-model="userLow.balance"
         v-validate="'required|decimal:2'"
         type="text"
         name="balance"
-        :class="{ 'is-invalid': errors.has('balance'), 'form-control': true }"
-      />
-      <span v-show="errors.has('balance')" class="invalid-feedback">{{
-        errors.first('balance')
-      }}</span>
-    </div>
-    <div class="form-group">
-      <label>Возраст</label>
-      <input
+        :class="{ 'is-invalid': errors.has('balance'), 'form-control': true }")
+      span.invalid-feedback(v-show="errors.has('balance')") {{errors.first('balance')}}
+    div.form-group
+      label Возраст
+      input(
         v-model="userLow.age"
         v-validate="'numeric|max_value:120'"
         type="text"
         name="age"
-        :class="{ 'is-invalid': errors.has('age'), 'form-control': true }"
-      />
-      <span v-show="errors.has('age')" class="invalid-feedback">{{ errors.first('age') }}</span>
-    </div>
-    <div class="form-group">
-      <label>Компания</label>
-      <input v-model="userLow.company" type="text" class="form-control" />
-    </div>
-    <div class="form-group">
-      <label>Эл. почта</label>
-      <input
+        :class="{ 'is-invalid': errors.has('age'), 'form-control': true }")
+      span.invalid-feedback(v-show="errors.has('age')") {{ errors.first('age') }}
+    div.form-group
+      label Компания
+      input.form-control(v-model="userLow.company" type="text")
+    div.form-group
+      label Эл. почта
+      input(
         v-model="userLow.email"
         v-validate="'email'"
         type="text"
         name="email"
-        :class="{ 'is-invalid': errors.has('email'), 'form-control': true }"
-      />
-      <span v-show="errors.has('email')" class="invalid-feedback">{{ errors.first('email') }}</span>
-    </div>
-    <div class="form-group">
-      <label>Телефон</label>
-
-      <input
-        v-model="userLow.phone"
-        v-validate="{
-          required: true,
-          regex: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
-        }"
-        type="text"
-        name="phone"
-        :class="{ 'is-invalid': errors.has('phone'), 'form-control': true }"
-      />
-      <span v-show="errors.has('phone')" class="invalid-feedback">{{ errors.first('phone') }}</span>
-    </div>
-    <div class="form-group">
-      <label>Адрес</label>
-      <input v-model="userLow.address" type="text" class="form-control" />
-    </div>
-    <div class="form-group">
-      <label>Интересы</label>
-      <input v-model="userLow.about" type="text" class="form-control" />
-    </div>
-    <div class="form-group">
-      <label>Дата рождения</label>
-      <!--<input v-model="userLow.registered" type="text" class="form-control" />-->
-      <datepicker
-        ref="Date birthday"
-        v-model="userLow.birthday"
-        v-validate="'date_format:dd.MM.yyyy|before:Date registered'"
+        :class="{ 'is-invalid': errors.has('email'), 'form-control': true }")
+      span.invalid-feedback(v-show="errors.has('email')") {{ errors.first('email') }}
+    div.form-group
+      label Телефон
+      input(
+        v-model="userLow.phone" 
+        v-validate="'{required: true, regex:/^(8|\+7)\d{10}$/}'"
+        type="text" 
+        name="phone" 
+        :class="{ 'is-invalid': errors.has('phone'), 'form-control': true }")
+      span.invalid-feedback(v-show="errors.has('phone')") {{ errors.first('phone') }}
+    div.form-group
+      label  Адрес
+      input.form-control(v-model="userLow.address" type="text")
+    div.form-group
+      label Интересы
+      input.form-control(v-model="userLow.about" type="text")
+    div.form-group
+      label Дата рождения
+      datepicker(
+        ref="Date birthday" 
+        v-model="userLow.birthday" 
+        v-validate="'date_format:dd.MM.yyyy|before:Date registered'" 
         :idRef="'dateBirthday'"
-        type="text"
-        name="birthday"
+        type="text" 
+        name="birthday" 
         :class="{ 'is-invalid': errors.has('birthday'), 'form-control': true }"
-      >
-      </datepicker>
-      <span v-show="errors.has('birthday')" class="invalid-feedback">{{
-        errors.first('birthday')
-      }}</span>
-    </div>
-    <div class="form-group">
-      <label>Дата регистрации</label>
-      <!--<input v-model="userLow.registered" type="text" class="form-control" />-->
-      <datepicker
-        ref="Date registered"
-        v-model="userLow.registered"
-        v-validate="'date_format:dd.MM.yyyy|after:Date birthday'"
+      )
+      span.invalid-feedback(v-show="errors.has('birthday')") {{errors.first('birthday')}}
+    div.form-group
+      label Дата регистрации
+      datepicker(
+        ref="Date registered" 
+        v-model="userLow.registered" 
+        v-validate="'date_format:dd.MM.yyyy|after:Date birthday'" 
         :idRef="'dateRegistered'"
-        type="text"
-        name="registered"
-        :class="{ 'is-invalid': errors.has('registered'), 'form-control': true }"
-      ></datepicker>
-      <span v-show="errors.has('registered')" class="invalid-feedback">{{
-        errors.first('registered')
-      }}</span>
-    </div>
-  </div>
+        type="text" 
+        name="registered" 
+        :class="{ 'is-invalid': errors.has('registered'), 'form-control': true }")
+      span.invalid-feedback(v-show="errors.has('registered')") {{errors.first('registered')}}
 </template>
 
 <script>

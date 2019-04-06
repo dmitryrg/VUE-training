@@ -1,5 +1,5 @@
 <template lang="pug">
-  #app
+  div#app
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
       router-link.navbar-brand(to="/") {{ title }}
       button.navbar-toggler(
@@ -10,7 +10,7 @@
         aria-expanded="false"
         aria-label="Toggle navigation")
         span.navbar-toggler-icon
-      #navbarCollapse.collapse.navbar-collapse
+      div#navbarCollapse.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
           router-link.nav-item(to="/" tag="li" exact='')
             a.nav-link Home

@@ -1,47 +1,35 @@
-<template>
-  <div>
-    <tag-combobox v-model="selectRowsPerPage"> </tag-combobox>
-    <table v-show="isListReady" class="table table-hover">
-      <thead>
-        <slot name="table-header">
-          <tr>
-            <th><span> #</span></th>
-            <th><span>Имя</span></th>
-            <th><span>Фамилия</span></th>
-            <th><span>Регистрация</span></th>
-            <th><span>Аватар</span></th>
-          </tr>
-        </slot>
-
-        <slot :checkChildMethodTop="checkChildMethod" name="button-area"></slot>
-      </thead>
-      <tbody>
-        <router-link v-for="user of shownUsers" :key="user.id" :to="makePathUser(user)" tag="tr">
-          <slot :user="user" name="table-row">
-            <td>
-              <span> {{ user.id }}</span>
-            </td>
-            <td>
-              <span> {{ user.firstName }}</span>
-            </td>
-            <td>
-              <span> {{ user.lastName }}</span>
-            </td>
-            <td>
-              <span> {{ user.registered }}</span>
-            </td>
-            <td><img :src="makeUrlImage(user.avatar)" /></td>
-          </slot>
-        </router-link>
-      </tbody>
-    </table>
-    <tag-pagination
-      v-model="selectPage"
-      :amountRowsAll="users.length"
-      :amountRowsPerPage="amountRowsPerPage"
-    ></tag-pagination>
-    <!--@page-choiced ="numberCurrentPage = $event"-->
-  </div>
+<template lang="pug">
+  div
+    tag-combobox(v-model='selectRowsPerPage')
+    table.table.table-hover(v-show='isListReady')
+      thead
+        slot(name='table-header')
+          tr
+            th
+              span  #
+            th
+              span Имя
+            th
+              span Фамилия
+            th
+              span Дата регистрации
+            th
+              span Аватар
+        slot(:checkChildMethodTop='checkChildMethod' name='button-area')
+      tbody
+        router-link(v-for='user of shownUsers' :key='user.id' :to='makePathUser(user)' tag='tr')
+          slot(:user='user' name='table-row')
+            td
+              span  {{ user.id }}
+            td
+              span  {{ user.firstName }}
+            td
+              span  {{ user.lastName }}
+            td
+              span  {{ user.registered }}
+            td
+              img(:src='makeUrlImage(user.avatar)')
+    tag-pagination(v-model='selectPage' :amountRowsAll='users.length' :amountRowsPerPage='amountRowsPerPage')
 </template>
 
 <script>

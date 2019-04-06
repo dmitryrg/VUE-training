@@ -1,8 +1,14 @@
-<template>
-  <div>
-    <input :ref="idRef" type="text" :value="date" />
-    <button type="button" @click="clickDatepicker">календарь</button>
-  </div>
+<template lang="pug">
+  div
+    input(
+      :ref="idRef"
+      type="text"
+      :value="date"
+    )
+    button(
+      type="button"
+      @click="clickDatepicker"
+    ) календарь
 </template>
 
 <script>

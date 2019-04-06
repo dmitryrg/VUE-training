@@ -10,6 +10,7 @@ export default Object.assign(
       }
     : {
         serverStatic: 'http://vue.limestudio.ru',
+        // serverStatic: 'http://vue.limestudio.ru/private',
         serverApi: 'https://api.limestudio.ru/apiservervue/api',
         serverPug: 'https://api.limestudio.ru/apiservervue'
       },

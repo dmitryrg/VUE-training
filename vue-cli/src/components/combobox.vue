@@ -1,14 +1,16 @@
-<template>
-  <select :style="backgroundImageArrow" @change="$emit('choice-done', $event.target.value)">
-    <option v-for="item of list" :key="item" :value="item">
-      {{ item }}
-    </option>
-  </select>
+<template lang="pug">
+  select(
+    :style="backgroundImageArrow" 
+    @change="$emit('choice-done',$event.target.value)")
+    option(
+      v-for="item of list"
+      :key="item"
+      :value="item"
+    ) {{ item }}
 </template>
 
 <script>
 import config from '@/config.js'
-console.log('__dirname ->', __dirname) // debug
 export default {
   name: 'Combobox',
   model: {
